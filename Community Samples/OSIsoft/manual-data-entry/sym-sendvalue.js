@@ -46,7 +46,7 @@
 		//		scope.dataStreamList = scope.symbol.DataSources;
 		scope.isStreamSelectedList = {};
 		scope.config.submittedData = {};
-		scope.config.submittedData.timestamps = _.range(3).fill(scope.config.defaultTimestamp);
+		scope.config.submittedData.timestamps = _.range(scope.symbol.DataSources.length).fill(scope.config.defaultTimestamp);
 		
 		scope.areAnyStreamsSelected = false;
 
