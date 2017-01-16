@@ -51,7 +51,7 @@
 		scope.areAnyStreamsSelected = false;
 
 		
-		var baseUrl = CS.ClientSettings.PIWebAPIUrl.replace(/\/?$/, '/'); //Example: "https://arcadia.osisoft.int/piwebapi/";
+		var baseUrl = CS.ClientSettings.PIWebAPIUrl.replace(/\/?$/, '/'); //Example: "https://example.com/piwebapi/";
 		console.log("baseUrl");
 		console.log(baseUrl);
 		
