@@ -20,7 +20,7 @@ Here is a video on how to install certificates for PI Web API: https://www.youtu
 
 And since the PI Web API requests are made from within PI Coresight server, you may (read: definitely will) run into CORS issues.
 I found the following video helpful when trying get CORS working without having to throw my server security wide open
- (i.e. without CorsHeaders=*, CorsMethods=* and CorsOrigins=*): https://www.youtube.com/watch?v=EyxieRFRPRw&index=10&list=PLMcG1Hs2JbcvGH0VCE4o-CjjaUkTiW5_D
+ (i.e. without CorsHeaders=\*, CorsMethods=\* and CorsOrigins=*): https://www.youtube.com/watch?v=EyxieRFRPRw&index=10&list=PLMcG1Hs2JbcvGH0VCE4o-CjjaUkTiW5_D
 
 ##Quick Demo Video
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=CUklG6o9yHc
