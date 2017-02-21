@@ -22,7 +22,7 @@ And since the PI Web API requests are made from within PI Coresight server, you 
 I found the following video helpful when trying get CORS working without having to throw my server security wide open
  (i.e. without CorsHeaders=*, CorsMethods=* and CorsOrigins=*): https://www.youtube.com/watch?v=EyxieRFRPRw&index=10&list=PLMcG1Hs2JbcvGH0VCE4o-CjjaUkTiW5_D
 
-##Quick Demof
+##Quick Demo Video
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=CUklG6o9yHc
 " target="_blank"><img src="http://img.youtube.com/vi/CUklG6o9yHc/0.jpg" 
-alt="Manual Data Entry for PI Coresight" width="240" height="180" border="10" /></a>
+alt="Manual Data Entry for PI Coresight" width="600" height="300" border="10" /></a5
