@@ -25,4 +25,4 @@ I found the following video helpful when trying get CORS working without having 
 ##Quick Demo Video
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=CUklG6o9yHc
 " target="_blank"><img src="http://img.youtube.com/vi/CUklG6o9yHc/0.jpg" 
-alt="Manual Data Entry for PI Coresight" width="600" height="300" border="10" /></a5
+alt="Manual Data Entry for PI Coresight" width="500" height="300" border="10" /></a>
