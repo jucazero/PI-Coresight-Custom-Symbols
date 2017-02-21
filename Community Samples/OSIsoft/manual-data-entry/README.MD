@@ -13,9 +13,13 @@ If this folder doesn't exist, create it.
 
 ##A word about requirements
 
-This symbol uses PI Web API to send data to the PI System. 
-This means that if you use a self-signed certificate for PI Web API, each client machine needs to install that certificate. Here is a video on how to install certificates for PI Web API: https://www.youtube.com/watch?list=PLMcG1Hs2JbcvGH0VCE4o-CjjaUkTiW5_D&v=KvYsF5MMQMU#t=04m18s
-And since the PI Web API requests are made from within PI Coresight server, you may (read: definitely will) run into CORS issues. I found the following video helpful when trying get CORS working without having to throw my server security wide open
+This symbol uses PI Web API to send data to the PI System.
+
+This means that if you use a self-signed certificate for PI Web API, each client machine needs to install that certificate. 
+Here is a video on how to install certificates for PI Web API: https://www.youtube.com/watch?list=PLMcG1Hs2JbcvGH0VCE4o-CjjaUkTiW5_D&v=KvYsF5MMQMU#t=04m18s
+
+And since the PI Web API requests are made from within PI Coresight server, you may (read: definitely will) run into CORS issues.
+I found the following video helpful when trying get CORS working without having to throw my server security wide open
  (i.e. without CorsHeaders=*, CorsMethods=* and CorsOrigins=*): https://www.youtube.com/watch?v=EyxieRFRPRw&index=10&list=PLMcG1Hs2JbcvGH0VCE4o-CjjaUkTiW5_D
 
 
