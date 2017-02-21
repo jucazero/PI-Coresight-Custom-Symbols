@@ -3,7 +3,7 @@
 		<thead style="width:100%; height:100%">
 		  <tr>
 			 <th><b>Attribute</b></th>
-			 <th><b>Timestamp</b></th>
+			 <th ng-show="config.showTimestamp"><b>Timestamp</b></th>
 			 <th><b>Value</b></th>
 			 <th><b>Select All</b> <input style="vertical-align: middle;" type="checkbox" ng-model="config.isAllSelected" ng-click="toggleAll()"/></th>
 		  </tr>
@@ -11,10 +11,10 @@
 		<tbody style="width:100%; height:100%">
 			<tr ng-repeat="dataItem in dataStreamList" >
 				<td style="text-align: left; vertical-align: middle;">{{dataItem.Label}}</td>
-				<td style="vertical-align: middle;"><input type="text" ng-model="config.submittedData.timestamps[$index]"/></td>
+				<td style="vertical-align: middle;" ng-show="config.showTimestamp" ><input type="text" ng-model="config.submittedData.timestamps[$index]"/></td>
 				<td style="vertical-align: middle;">
-					<input ng-if="!isEnumerationType[$index]" ng-init="getType($index)" type="{{inputType[$index]}}" ng-model="config.submittedData.values[$index]" />
-					<select ng-if="isEnumerationType[$index]" ng-options="option.Name for option in enumerationOptions[$index] track by option.Id" ng-model="config.submittedData.values[$index]"></select>
+					<input ng-if="!isEnumerationType[$index]" ng-init="getType($index)" type="{{inputType[$index]}}" ng-model="config.submittedData.values[$index]" ng-style="{'width': config.valColWidth, 'max-width': '300px'}" />
+					<select ng-if="isEnumerationType[$index]" ng-options="option.Name for option in enumerationOptions[$index] track by option.Id" ng-model="config.submittedData.values[$index]" ng-style="{'width': config.valColWidth, 'max-width': '300px'}"></select>
 				</td>
 				<td style="vertical-align: middle;"><input type="checkbox"  ng-model="isStreamSelectedList[$index]" ng-false-value="undefined" ng-change="cbSelectionUpdate()"/></td>
 			</tr>
@@ -22,6 +22,14 @@
 	</table>
 </div>
 
-<button ng-click="sendValue()" ng-disabled="!areAnyStreamsSelected" ng-style="areAnyStreamsSelected ? config.SendBtnStyles.general : config.SendBtnStyles.disabled ">
-Send
+<button ng-click="sendValue()" ng-disabled="!areAnyStreamsSelected" ng-style="{ 'background-color': config.bgColor,
+																			    'color': config.textColor,
+																				'width': config.btnWidth, 
+																				'height': config.btnHeight, 
+																				'text-shadow': '0 -1px 0 rgba(0,0,0,.25)',
+																				'margin-left': 'auto',
+																				'border': '1px solid rgba(230,231,232,.55)',
+																				'opacity': areAnyStreamsSelected ? '1' : '0.65'}">
+<img src="Scripts/app/editor/symbols/ext/Icons/loading.gif" ng-show="config.loading" />
+{{config.btnText}}
 </button>
