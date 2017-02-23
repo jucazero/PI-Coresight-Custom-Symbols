@@ -3,7 +3,7 @@
 	    typeName: 'sendvalue',
 	    datasourceBehavior:  CS.Extensibility.Enums.DatasourceBehaviors.Multiple,
 		visObjectType: symbolVis,
-        iconUrl: '/Scripts/app/editor/symbols/ext/Icons/Update.png',
+        iconUrl: '/Scripts/app/editor/symbols/ext/Icons/paper-plane-xxl.png',
 	    getDefaultConfig: function() {			
 	    	return {
 	    		DataShape: 'TimeSeries',
