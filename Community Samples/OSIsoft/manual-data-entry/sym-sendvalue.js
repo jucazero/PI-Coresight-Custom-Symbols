@@ -144,7 +144,7 @@
 			{
 				var itemPath = scope.dataStreamList[index].Path;
 				
-				var isAttribute = itemPath.includes("|") ? true : false;
+				var isAttribute = _.contains(itemPath, "|") ? true : false;
 				var getDataStreamURL = isAttribute ? encodeURI(baseUrl + "attributes?path=" + itemPath) : encodeURI(baseUrl + "points?path=" + itemPath);
 				
 				$http.get(getDataStreamURL, {withCredentials: true}).success(function(response){
@@ -226,7 +226,7 @@
 
 					var itemPath = dataStream.Path;
 					
-					var isAttribute = itemPath.includes("|") ? true : false;
+					var isAttribute = _.contains(itemPath, "|") ? true : false;
 					var streamInfoUrl = isAttribute ? encodeURI(baseUrl + "attributes?path=" + itemPath + "&selectedFields=Links.Value") : encodeURI(baseUrl + "points?path=" + itemPath + "&selectedFields=Links.Value");
 					
 					
