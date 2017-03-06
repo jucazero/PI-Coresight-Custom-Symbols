@@ -242,6 +242,8 @@
 						"Method": "GET",
 						"Resource": streamInfoUrl
 					}
+					//TODO: check if the post request failes with 405 and if it does, send the put request.
+					//for streams
 					batchRequest["PostValue" + index.toString()] = {
 								"Method": "POST",
 								"Resource": "{0}",
@@ -257,6 +259,7 @@
 								]
 						
 					}
+					//for static attributes
 					batchRequest["PutValue" + index.toString()] = {
 								"Method": "PUT",
 								"Resource": "{0}",
