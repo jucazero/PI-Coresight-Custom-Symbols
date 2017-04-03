@@ -6,7 +6,7 @@
         iconUrl: '/Scripts/app/editor/symbols/ext/Icons/paper-plane-xxl.png',
 	    getDefaultConfig: function() {			
 	    	return {
-	    		DataShape: 'TimeSeries',
+	    		DataShape: 'Table',
 		        Height: 50,
 		        Width: 450,
 				defaultTimestamp: '*',
@@ -35,8 +35,9 @@
 	var baseUrl = CS.ClientSettings.PIWebAPIUrl.replace(/\/?$/, '/'); //Example: "https://server.domain.com/piwebapi/";
 		
 	symbolVis.prototype.init = function (scope, elem, $http, $q){
-		
- 	    this.onConfigChange = configChange;
+			
+		console.log(CS);
+			console.log('scope',scope);
 		var TYPES = {
 			Single: "Number",
 			Double: "Number",
@@ -54,36 +55,60 @@
 		};
 		scope.streamList = [];
 		scope.config.isAllSelected = false;
-		scope.areAnyStreamsSelected = false;
+		scope.isBtnEnabled = false;
+		scope.config.DataSources = scope.symbol.DataSources;
 		
-		fillDataStreamList(scope.symbol.DataSources).then(function(streams){
+		this.onConfigChange = configChange;
+		
+		function configChange(newConfig, oldConfig) {
+            if (newConfig && oldConfig && !angular.equals(newConfig, oldConfig)) {			
+				var newdatasoucres = _.difference(newConfig.DataSources, oldConfig.DataSources);
+				if(newdatasoucres.length > 0){
+					getstreams(newdatasoucres).then(function(newstreams){
+						scope.streamList = scope.streamList.concat(newstreams);
+					});					
+				}
+            }
+        }
+		
+		getstreams(scope.symbol.DataSources).then(function(streams){
 			scope.streamList = streams;
-		//	console.log('streams', streams);
+			//console.log('streams', streams);
 		});
 				
-		function fillDataStreamList(datasources){
+		function getstreams(datasources){
 			//Breaking chains: http://stackoverflow.com/questions/28250680/how-do-i-access-previous-promise-results-in-a-then-chain
 			var datastreams = _.map(datasources, function(item) {
 								var isAttribute = /af:/.test(item);
 								var path = isAttribute ? item.replace(/af\:(.*)/,'$1') : item.replace(/pi\:(\\\\.*)\?{1}.*(\\.*)\?{1}.*/,'$1$2');
 								var label = isAttribute ? path.match(/\w*\|.*$/)[0] : path.match(/\w+$/)[0];
 							
-								return {IsAttribute: isAttribute, Path: path, Label: label, IsSelected: false, Value: undefined, Timestamp: scope.config.defaultTimestamp};
+								return {IsAttribute: isAttribute,
+										Path: path, 
+										Label: label,
+										IsSelected: false, 
+										Value: undefined, 
+										Timestamp: scope.config.defaultTimestamp};
 							});
 			
 			var streamsConfigPromise = getStreamsConfig(datastreams);
 			
-			var enumPromise = streamsConfigPromise.then(function(streamsConfig){				
-				var enumBatchRequest = getEnumConfig(streamsConfig.data);				
-				return 	(_.size(enumBatchRequest) > 0
-						? $http.post(baseUrl + 'batch', enumBatchRequest, {withCredentials: true})
-						: $q.reject() //if there are no streams of the Enumeration type, reject promise
-						);				
+			var enumPromise = streamsConfigPromise.then(function(streamsConfig){
+				var deferred = $q.defer();				
+				
+				var enumBatchRequest = getEnumConfig(streamsConfig.data);	
+
+				_.size(enumBatchRequest) > 0 
+						? deferred.resolve($http.post(baseUrl + 'batch', enumBatchRequest, {withCredentials: true}))
+						: deferred.resolve('') //if there are no streams of the Enumeration type, resolve emtry string.
+										
+				return 	deferred.promise;
 			});
 			
 			
+			
 			return $q.all([streamsConfigPromise, enumPromise]).then(function(responses){
-				
+			
 				var streamsconfig = responses[0].data;
 				var enumerations = responses[1].data;
 				
@@ -94,7 +119,7 @@
 					stream.ValueUrl = streamsconfig[index].Content.Links.Value;
 					stream.isPoint = isPIPoint(streamsconfig[index], stream.IsAttribute);
 				});
-
+				
 				return datastreams;
 			});			
 		};
@@ -169,41 +194,38 @@
 			return (isAttribute && stream.Content.DataReferencePlugIn == "PI Point") || !isAttribute;
 		};
 		
-		function configChange(newConfig, oldConfig) {
-			if (newConfig && oldConfig && !angular.equals(newConfig, oldConfig)) {
-			//TODO: handle configuration change
-				
-			}
-
-	    };
-
 	
-	   scope.sendValue = function(){
+	   scope.sendValues = function(){
 		   
 		scope.config.loading = true; //show button loading icon
-		    
+		scope.isBtnEnabled = false;   
 		   var streams = scope.streamList;
            if(!anyStreamsSelected(streams)) return;
                
 			var batchRequest = formBulkSendRequest(streams);
 			
 			//Send batch request to PI Web API endpoint
-			 $http.post(baseUrl + "batch", batchRequest, {withCredentials: true})
-			 .success(function(){
-				setTimeout(function(){scope.config.loading = false}, 2000);	
-				});      
- 
-                
+			var sendDataPromise = _.size(batchRequest) > 0 
+									? $http.post(baseUrl + "batch", batchRequest, {withCredentials: true})
+									: $q.reject();
+									
+			sendDataPromise.then(function(){
+				setTimeout(function(){
+					scope.config.loading = false;
+					scope.isBtnEnabled = true;
+					}, 3000);	
+				});
+			      
 			
         
 	   };
 	   
-	   		formBulkSendRequest = function(streamList) {
+	   	formBulkSendRequest = function(streamList) {
 			
 			var batchRequest = {};
 			
 			streamList.forEach(function(stream, index){
-					if(!stream.IsSelected || !stream.Value) return;			
+					if(!stream.IsSelected || (!stream.Value && stream.Value !== 0)) return;			
 				
 					var data = {
                         "Timestamp": stream.Timestamp,
@@ -222,7 +244,7 @@
 					}
 				
 				});		   
-		//		console.log(batchRequest);
+			//	console.log(batchRequest);
 			return JSON.stringify(batchRequest);
 		};
 
@@ -231,12 +253,12 @@
 		scope.toggleAll = function(){			
 			var toggleValue = scope.config.isAllSelected;
 			scope.streamList.forEach(function(stream){stream.IsSelected = toggleValue});
-			scope.areAnyStreamsSelected  = anyStreamsSelected();
+			scope.isBtnEnabled  = anyStreamsSelected();
 		};
 		
 		scope.toggleStreamSelection = function(){
 			scope.config.isAllSelected = scope.streamList.every(function(stream){return(stream.IsSelected)});
-			scope.areAnyStreamsSelected  = anyStreamsSelected();
+			scope.isBtnEnabled  = anyStreamsSelected();
 		};
 		
 		anyStreamsSelected = function(){
