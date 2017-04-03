@@ -25,48 +25,18 @@
 	            mode: 'format'
 	        }];
 	    },
-        inject: ['$http']
+        inject: ['$http', '$q']
 	};
     
     
 	function symbolVis() { }
 	CS.deriveVisualizationFromBase(symbolVis);
 		
-	symbolVis.prototype.init = function (scope, elem, $http){
-
+	var baseUrl = CS.ClientSettings.PIWebAPIUrl.replace(/\/?$/, '/'); //Example: "https://server.domain.com/piwebapi/";
 		
+	symbolVis.prototype.init = function (scope, elem, $http, $q){
 		
-		this.onDataUpdate = dataUpdate;
-	    
-		function dataUpdate(data) {
-		
-	        if(data) {
-			
-	            if(data.Data[0].Label) {
-					//get Data Streams configuration from the data object provided by PI Coresight data layer
-					scope.dataStreamList = data.Data;
-					//console.log("Logging scope.symbol.Name");
-					//console.log(scope.symbol.Name);
-        			//console.log("Logging scope.$id");
-					//console.log(CS);
-	            }
-	        }
-	    };
-		// TODO: Replace dataStreamList with:
-		//		scope.dataStreamList = scope.symbol.DataSources;
-		scope.isStreamSelectedList = {};
-		scope.config.submittedData = {};
-		scope.config.submittedData.values = []; 
-		scope.config.submittedData.timestamps = _.range(scope.symbol.DataSources.length).fill(scope.config.defaultTimestamp);
-		
-		scope.areAnyStreamsSelected = false;
-
-		
-		var baseUrl = CS.ClientSettings.PIWebAPIUrl.replace(/\/?$/, '/'); //Example: "https://arcadia.osisoft.int/piwebapi/";
-
-		scope.inputType = {};
-		scope.isEnumerationType = {};
-		scope.enumerationOptions= {};
+ 	    this.onConfigChange = configChange;
 		var TYPES = {
 			Single: "Number",
 			Double: "Number",
@@ -82,206 +52,200 @@
 			DateTime: "String"
 			
 		};
+		scope.streamList = [];
+		scope.config.isAllSelected = false;
+		scope.areAnyStreamsSelected = false;
 		
+		fillDataStreamList(scope.symbol.DataSources).then(function(streams){
+			scope.streamList = streams;
+		//	console.log('streams', streams);
+		});
+				
+		function fillDataStreamList(datasources){
+			//Breaking chains: http://stackoverflow.com/questions/28250680/how-do-i-access-previous-promise-results-in-a-then-chain
+			var datastreams = _.map(datasources, function(item) {
+								var isAttribute = /af:/.test(item);
+								var path = isAttribute ? item.replace(/af\:(.*)/,'$1') : item.replace(/pi\:(\\\\.*)\?{1}.*(\\.*)\?{1}.*/,'$1$2');
+								var label = isAttribute ? path.match(/\w*\|.*$/)[0] : path.match(/\w+$/)[0];
+							
+								return {IsAttribute: isAttribute, Path: path, Label: label, IsSelected: false, Value: undefined, Timestamp: scope.config.defaultTimestamp};
+							});
+			
+			var streamsConfigPromise = getStreamsConfig(datastreams);
+			
+			var enumPromise = streamsConfigPromise.then(function(streamsConfig){				
+				var enumBatchRequest = getEnumConfig(streamsConfig.data);				
+				return 	(_.size(enumBatchRequest) > 0
+						? $http.post(baseUrl + 'batch', enumBatchRequest, {withCredentials: true})
+						: $q.reject() //if there are no streams of the Enumeration type, reject promise
+						);				
+			});
+			
+			
+			return $q.all([streamsConfigPromise, enumPromise]).then(function(responses){
+				
+				var streamsconfig = responses[0].data;
+				var enumerations = responses[1].data;
+				
+				datastreams.forEach(function(stream, index){					
+					stream.IsEnumerationType = isEnumerationType(streamsconfig[index]);
+					stream.EnumerationOptions = getEnumerationOptions(enumerations, stream.IsEnumerationType, index);
+					stream.Type = getType(streamsconfig[index], stream.IsAttribute);
+					stream.ValueUrl = streamsconfig[index].Content.Links.Value;
+					stream.isPoint = isPIPoint(streamsconfig[index], stream.IsAttribute);
+				});
+
+				return datastreams;
+			});			
+		};
+			
+		function getStreamsConfig(datastreams){
 		
+			var batchRequest = {};
+			_.each(datastreams, function(datastream, index){
+				var getDataStreamURL = datastream.IsAttribute ? encodeURI(baseUrl + "attributes?path=" + datastream.Path) : encodeURI(baseUrl + "points?path=" + datastream.Path);
+				
+				batchRequest[index] = {
+					'Method': 'GET',
+					'Resource': getDataStreamURL						
+				}
+			});
+			
+			return $http.post(baseUrl + 'batch', JSON.stringify(batchRequest), {withCredentials: true});
+		};	
+		
+		function getEnumConfig(streams){
+			//TODO: handle digital pi points
+			var enumBatchRequest = {};
+			_.chain(streams)
+				.map(function(stream, index){return {Index: index,
+													 Type: stream.Content.Type,
+													 EnumUrl: stream.Content.Links.EnumerationSet}})
+				.where({Type: "EnumerationValue"})
+				.each(function(enumstream){ _.extend(enumBatchRequest,
+											getEnumRequest(enumstream.EnumUrl, enumstream.Index),
+										    getEnumValuesRequest(enumstream.Index))}) 
+				.value();
+				
+			return enumBatchRequest;
+		};
+				
+		function getEnumRequest(enumUrl, index){
+
+			return {['EnumConfig' + index]: {'Method': 'GET', 'Resource': enumUrl}}
+		}
+			
+		function getEnumValuesRequest(index){
+			
+				return	{
+					['EnumValues' + index]: {
+									'Method': 'GET',
+									'Resource': '{0}',
+									'ParentIds': [
+										'EnumConfig' + index
+									],
+									'Parameters': [
+										'$.EnumConfig' + index + '.Content.Links.Values'
+									]
+						}
+				}
+			
+		};
+			
+		function isEnumerationType(stream){
+			return _.has(stream.Content, "Type") && stream.Content.Type == "EnumerationValue";
+		};
+		
+		function getEnumerationOptions(enumerations, isEnumerationType, index){
+			return isEnumerationType ? enumerations["EnumValues" + index].Content.Items : ""; 
+			
+		};
+		
+		function getType(stream, isAttribute){
+			return isAttribute ? TYPES[stream.Content.Type] : TYPES[stream.Content.PointType];
+		};
+		
+		function isPIPoint(stream, isAttribute){
+			return (isAttribute && stream.Content.DataReferencePlugIn == "PI Point") || !isAttribute;
+		};
+		
+		function configChange(newConfig, oldConfig) {
+			if (newConfig && oldConfig && !angular.equals(newConfig, oldConfig)) {
+			//TODO: handle configuration change
+				
+			}
+
+	    };
+
+	
 	   scope.sendValue = function(){
 		   
-		   scope.config.loading = true;
-		    //Send data only if we have the following:
-			//scope.config.submittedData - WHAT to send 
-			//dataStreamList - WHERE to send
-			//AnyStreamsSelected - confirmation from user 
-           if(scope.config.submittedData && scope.dataStreamList && anyStreamsSelected()){
+		scope.config.loading = true; //show button loading icon
+		    
+		   var streams = scope.streamList;
+           if(!anyStreamsSelected(streams)) return;
                
-				//Form a batch request to send to PI Web API
-				//TODO = example of batch request
-				var batchRequest = formBulkSendRequest(scope.dataStreamList,scope.config.submittedData);
-				//console.log(batchRequest);
-				
-				//Send batch request to PI Web API endpoint
-				$http({
-					url: baseUrl + "batch" ,
-					method: "POST",
-					data: batchRequest,
-					withCredentials: true,
-					headers: {
-						'Content-Type': 'application/json',
-					}
-				}).success(function(response){
-					setTimeout(function() {
-						scope.config.loading = false;
-					}, 2000);
-					
-				});     
-     
+			var batchRequest = formBulkSendRequest(streams);
+			
+			//Send batch request to PI Web API endpoint
+			 $http.post(baseUrl + "batch", batchRequest, {withCredentials: true})
+			 .success(function(){
+				setTimeout(function(){scope.config.loading = false}, 2000);	
+				});      
+ 
                 
-			}
+			
         
 	   };
 	   
-		scope.toggleAll = function(){
-			var toggleValue = scope.config.isAllSelected;
-			
-			scope.dataStreamList.forEach(function(dataItem, index){
-				scope.isStreamSelectedList[index] = toggleValue;
-			});
-			
-			scope.areAnyStreamsSelected  = anyStreamsSelected();
-		};
-		
-		scope.cbSelectionUpdate = function(){
-			
-			scope.config.isAllSelected = scope.dataStreamList.every(function(dataItem, index){	
-					return(scope.isStreamSelectedList[index])
-			 });
-			 scope.areAnyStreamsSelected  = anyStreamsSelected();
-		};
-		
-
-		
-		scope.getType = function(index){
-			
-			if(scope.dataStreamList)
-			{
-				var itemPath = scope.dataStreamList[index].Path;
-				
-				var isAttribute = _.contains(itemPath, "|") ? true : false;
-				var getDataStreamURL = isAttribute ? encodeURI(baseUrl + "attributes?path=" + itemPath) : encodeURI(baseUrl + "points?path=" + itemPath);
-				
-				$http.get(getDataStreamURL, {withCredentials: true}).success(function(response){
-						
-						//General case
-						scope.inputType[index] = isAttribute ? TYPES[response.Type] : TYPES[response.PointType];
-						
-						
-						//Attribute with Enumeration Set Value type case
-						if (isAttribute && response.Type == "EnumerationValue")
-						{	
-							scope.isEnumerationType[index] = true; 
-													
-							var batchRequest = {
-								"EnumSetConfig" : {
-									"Method": "GET",
-									"Resource": response.Links.EnumerationSet
-								},
-								"EnumSetValues" : {
-									"Method": "GET",
-									"Resource": "{0}",
-									"ParentIds": [
-										"EnumSetConfig"
-									],
-									"Parameters": [
-										"$.EnumSetConfig" + ".Content.Links.Values"
-									]
-								}
-							}
-							
-							$http({
-								url: baseUrl + "batch" ,
-								method: "POST",
-								data: JSON.stringify(batchRequest),
-								withCredentials: true,
-								headers: {
-									'Content-Type': 'application/json',
-								}
-							}).success(function(enumSet){
-								
-								scope.enumerationOptions[index] = enumSet.EnumSetValues.Content.Items;
-								
-							});    
-							
-						}
-						else
-						{	scope.isEnumerationType[index] = false;}
-						
-						
-						
-						
-				});
-					
-				
-				
-			}
-			
-		};
-			
-		
-		anyStreamsSelected = function(){
-			
-			return scope.dataStreamList.some(function(dataItem, index){	
-					return(scope.isStreamSelectedList[index])
-			 })
-			
-		};
-		
-		
-
-		formBulkSendRequest = function(dataStreamList, submittedData) {
+	   		formBulkSendRequest = function(streamList) {
 			
 			var batchRequest = {};
-			dataStreamList.forEach(function(dataStream, index){
-					
-					//skip Data Streams that are not selected
-					if(!scope.isStreamSelectedList[index])
-						return;
-
-					var itemPath = dataStream.Path;
-					
-					var isAttribute = _.contains(itemPath, "|") ? true : false;
-					var streamInfoUrl = isAttribute ? encodeURI(baseUrl + "attributes?path=" + itemPath + "&selectedFields=Links.Value") : encodeURI(baseUrl + "points?path=" + itemPath + "&selectedFields=Links.Value");
-					
-					
+			
+			streamList.forEach(function(stream, index){
+					if(!stream.IsSelected || !stream.Value) return;			
+				
 					var data = {
-                        "Timestamp": submittedData.timestamps[index],
-                        "Value": scope.isEnumerationType[index] ? submittedData.values[index].Name : submittedData.values[index]
+                        "Timestamp": stream.Timestamp,
+                        "Value": stream.IsEnumerationType ? stream.Value.Name : stream.Value
 					};
 					
-					//var method = isAttribute ? "POST"
+					var method = stream.isPoint ? "POST" : "PUT";
 					
-					batchRequest["GetStreamInfo" + index.toString()] = {
-						"Method": "GET",
-						"Resource": streamInfoUrl
-					}
-					//TODO: check if the post request failes with 405 and if it does, send the put request.
-					//for streams
-					batchRequest["PostValue" + index.toString()] = {
-								"Method": "POST",
-								"Resource": "{0}",
+					batchRequest["SendValue" + index] = {
+								"Method": method,
+								"Resource": stream.ValueUrl,
 								"Content": JSON.stringify(data),
 								"Headers": {
 									'Content-Type': 'application/json'
-								},
-								"ParentIds": [
-									"GetStreamInfo" + index.toString()
-								],
-								"Parameters": [
-									"$.GetStreamInfo" + index.toString() + ".Content.Links.Value"
-								]
-						
-					}
-					//for static attributes
-					batchRequest["PutValue" + index.toString()] = {
-								"Method": "PUT",
-								"Resource": "{0}",
-								"Content": JSON.stringify(data),
-								"Headers": {
-									'Content-Type': 'application/json'
-								},
-								"ParentIds": [
-									"GetStreamInfo" + index.toString()
-								],
-								"Parameters": [
-									"$.GetStreamInfo" + index.toString() + ".Content.Links.Value"
-								]
-						
+								}
 					}
 				
 				});		   
-		
+		//		console.log(batchRequest);
 			return JSON.stringify(batchRequest);
 		};
 
 		
+	   
+		scope.toggleAll = function(){			
+			var toggleValue = scope.config.isAllSelected;
+			scope.streamList.forEach(function(stream){stream.IsSelected = toggleValue});
+			scope.areAnyStreamsSelected  = anyStreamsSelected();
+		};
+		
+		scope.toggleStreamSelection = function(){
+			scope.config.isAllSelected = scope.streamList.every(function(stream){return(stream.IsSelected)});
+			scope.areAnyStreamsSelected  = anyStreamsSelected();
+		};
+		
+		anyStreamsSelected = function(){
+			return scope.streamList.some(function(stream){return(stream.IsSelected)});
+		};
+		
+		
+
+
 		scope.config.SendBtnStyles = {
 			disabled: {
 				'cursor': 'not-allowed',

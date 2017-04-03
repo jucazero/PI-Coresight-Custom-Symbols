@@ -1,22 +1,22 @@
- <div class="table-responsive" style="height: 100%;"> 
-	<table  style="color: white; width: 100%; height:100%;"> <!--  class="table"> -->
-		<thead style="width:100%; height:100%">
-		  <tr>
+ <div class="table-responsive"> 
+	<table  class="table">
+		<thead style="color:white;">
+		  <tr >
 			 <th><b>Attribute</b></th>
 			 <th ng-show="config.showTimestamp"><b>Timestamp</b></th>
 			 <th><b>Value</b></th>
-			 <th><b>Select All</b> <input style="vertical-align: middle;" type="checkbox" ng-model="config.isAllSelected" ng-click="toggleAll()"/></th>
+			 <th><b>Select All  </b><input type="checkbox" style="vertical-align: middle;" ng-model="config.isAllSelected" ng-change="toggleAll(streamList)"/></th>
 		  </tr>
 		</thead>
-		<tbody style="width:100%; height:100%">
-			<tr ng-repeat="dataItem in dataStreamList" >
-				<td style="text-align: left; vertical-align: middle;">{{dataItem.Label}}</td>
-				<td style="vertical-align: middle;" ng-show="config.showTimestamp" ><input type="text" ng-model="config.submittedData.timestamps[$index]"/></td>
+		<tbody>
+			<tr ng-repeat="stream in streamList" >
+				<td style="color: white; text-align: left; vertical-align: middle;">{{stream.Label}}</td>
+				<td style="vertical-align: middle;" ng-show="config.showTimestamp" ><input type="text" ng-model="stream.Timestamp"/></td>
 				<td style="vertical-align: middle;">
-					<input ng-if="!isEnumerationType[$index]" ng-init="getType($index)" type="{{inputType[$index]}}" ng-model="config.submittedData.values[$index]" ng-style="{'width': config.valColWidth, 'max-width': '300px'}" />
-					<select ng-if="isEnumerationType[$index]" ng-options="option.Name for option in enumerationOptions[$index] track by option.Id" ng-model="config.submittedData.values[$index]" ng-style="{'width': config.valColWidth, 'max-width': '300px'}"></select>
+					<input ng-if="!stream.IsEnumerationType" type="{{stream.Type}}" ng-model="stream.Value" ng-style="{'width': config.valColWidth, 'max-width': '300px'}" />
+					<select ng-if="stream.IsEnumerationType" ng-options="option.Name for option in stream.EnumerationOptions track by option.Id" ng-model="stream.Value" ng-style="{'width': config.valColWidth, 'max-width': '300px'}"></select>
 				</td>
-				<td style="vertical-align: middle;"><input type="checkbox"  ng-model="isStreamSelectedList[$index]" ng-false-value="undefined" ng-change="cbSelectionUpdate()"/></td>
+				<td style="vertical-align: middle;"><input type="checkbox"  ng-model="stream.IsSelected" ng-change="toggleStreamSelection()"/></td>
 			</tr>
 		</tbody>
 	</table>
