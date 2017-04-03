@@ -36,8 +36,6 @@
 		
 	symbolVis.prototype.init = function (scope, elem, $http, $q){
 			
-		console.log(CS);
-			console.log('scope',scope);
 		var TYPES = {
 			Single: "Number",
 			Double: "Number",
