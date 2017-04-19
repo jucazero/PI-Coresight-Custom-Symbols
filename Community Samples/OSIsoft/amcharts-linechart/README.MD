@@ -21,8 +21,10 @@ If this folder doesn't exist, create it.
 6. Run iisreset
 
 
-To convert this symbol to PI Vision 2017, replace the last line in the sym-amcharts-linechart.js file with *})(window.PIVisualization)*;
+To convert this symbol to PI Vision 2017, replace the last line in the sym-amcharts-linechart.js file with 
+*})(window.PIVisualization)*;
 
 
 I.e. 
-})(window.Coresight); => })(window.PIVisualization);
+
+})(window.Coresight);      =>     })(window.PIVisualization);
