@@ -154,14 +154,13 @@
 		};
 				
 		function getEnumRequest(enumUrl, index){
-
-			return {['EnumConfig' + index]: {'Method': 'GET', 'Resource': enumUrl}}
+			//using _.object() here to avoid IE compatibility issues
+			return _.object(['EnumConfig' + index, {'Method': 'GET', 'Resource': enumUrl}]);
 		}
 			
 		function getEnumValuesRequest(index){
-			
-				return	{
-					['EnumValues' + index]: {
+			//using _.object() here to avoid IE compatibility issues
+			return _.object(['EnumValues' + index, {
 									'Method': 'GET',
 									'Resource': '{0}',
 									'ParentIds': [
@@ -170,10 +169,9 @@
 									'Parameters': [
 										'$.EnumConfig' + index + '.Content.Links.Values'
 									]
-						}
-				}
-			
+						}]);	
 		};
+			
 			
 		function isEnumerationType(stream){
 			return _.has(stream.Content, "Type") && stream.Content.Type == "EnumerationValue";
