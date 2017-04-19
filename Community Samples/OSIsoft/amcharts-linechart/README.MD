@@ -15,7 +15,7 @@ If this folder doesn't exist, create it.
 	
 	*sym-amcharts-linechart.js*
 
-3. Place *LineChart.png* to the .\ext\Icons directory (create if it doesn't exist)
+3. Place *LineChart.png, sin-down.png and sin-right.png* to the .\ext\Icons directory (create if it doesn't exist)
 4. Place the Underscore library (*underscore-min.js*) to the .\ext\libraries (create if doesn't exist). The latest version of Underscore can be downloaded from http://underscorejs.org/.
 5. Place the amCharts libraries (*amcharts.js*, *dark.js* and *serial.js*) to the .\ext\libraries folder.
 6. Run iisreset
