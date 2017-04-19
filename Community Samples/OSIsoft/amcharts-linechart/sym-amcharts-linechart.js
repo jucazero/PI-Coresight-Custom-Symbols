@@ -40,7 +40,8 @@
 				BackgroundColor: "",
 				TextColor: "#ffffff",
 				Graphs: [],
-				Rotate: false
+				Rotate: false,
+				LabelRotation: 0
 				
             };
 		},
@@ -91,11 +92,12 @@
 			
             if (chart && newConfig && oldConfig && !angular.equals(newConfig, oldConfig)) {			
 			
-				console.log('newConfig',newConfig);
-				console.log('chart',chart);
+				//console.log('newConfig',newConfig);
+				//console.log('chart',chart);
 				chart.graphs = getGraphs(newConfig.Graphs);
 				chart.color = scope.config.TextColor;
 				chart.rotate = scope.config.Rotate;
+				chart.categoryAxis.labelRotation =  scope.config.LabelRotation;
 		//		console.log('test', chart);
 				chart.validateData();
 			//	console.log('config log', scope.config.BackgroundColor);
@@ -191,7 +193,6 @@
 						"theme": "dark",
 						"rotate": config.Rotate,
 						"color": config.TextColor,
-					//	"plotAreaFillAlphas": 1,
 						//"plotAreaFillColors": scope.config.plotAreaFillColor,
 						//"fontFamily": "arial",
 						//"marginRight": 30,
@@ -204,6 +205,7 @@
 						}],    
 						"categoryAxis": {
 							"title": "Time",
+							"labelRotation": config.LabelRotation,
 						//	"parseDates": true,
 							"type": "date",
 						/*  	"labelFunction": function(t,date) {

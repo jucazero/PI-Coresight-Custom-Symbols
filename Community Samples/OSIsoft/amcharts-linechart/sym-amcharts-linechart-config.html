@@ -44,9 +44,17 @@
 			<span class="k-icon k-i-arrow-n k-panelbar-collapse"></span>
 		</span>
 		<div role="region">
+	
 			<div class="config-option-format">   
 				Enable / disable Markers (bullets)
 			</div>	
+			
+			<div class="config-option-format">
+				<div class="config-option-single-row" style="margin: 4px 0;">
+					<div class="config-label">Label Rotation:</div>
+					<input class="config-option-single-row-input" type="range" min="0" max="360" step="5" ng-model="config.LabelRotation" style="width:100px; height:100%;" title="0">
+				</div>
+			</div>
 			<div class="config-option-format">
 				<label>
 					<input type="radio" class="c-config-radio"  ng-model="config.Rotate" ng-value="false">
@@ -58,7 +66,7 @@
 				</label>		
 			</div>	
 		
-		
+			
 		</div>
 		       
     </li>
