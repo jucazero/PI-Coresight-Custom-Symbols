@@ -1,0 +1,104 @@
+<!-- <div class="c-side-pane t-toolbar">
+    <span style="color:#fff; margin-left:15px">General</span>
+</div>
+
+<div class="c-side-pane t-toolbar">
+    <span style="color:#fff; margin-left:15px">Display Format</span>
+</div>
+
+<div class="c-side-pane t-toolbar">
+    <span style="color:#fff; margin-left:15px">Trace Format</span>
+</div> -->
+
+<ul kendo-panel-bar class="t-side-panel-bgcolor" style="font-size: 14px;" role="menu">
+    <li class="k-item k-state-active" role="menuitem">
+        <span class="k-link k-header">
+			<span>General</span>
+			<span class="k-icon k-i-arrow-n k-panelbar-collapse"></span>
+		</span>
+		<div role="region"> 
+			<div class="config-option-format">   
+				<cs-color-picker colorkeyword="Background" ng-model="config.BackgroundColor" config="config"></cs-color-picker>
+			</div>
+			<div class="config-option-format">   
+				<cs-color-picker colorkeyword="Text" ng-model="config.TextColor" config="config"></cs-color-picker>
+			</div>		
+			
+			<div class="config-option-format">   
+				placeholder for Single/Multi Scale 
+				
+			</div>	
+			<div class="config-option-format">   
+				placeholder for 
+				min.max scale settings
+			</div>			
+		
+		</div>
+		
+		
+    </li>
+
+    <li class="k-item k-state-active" role="menuitem">
+        <span class="k-link k-header">
+			<span>Display Format</span>
+			<span class="k-icon k-i-arrow-n k-panelbar-collapse"></span>
+		</span>
+		<div role="region">
+			<div class="config-option-format">   
+				Enable / disable Markers (bullets)
+			</div>	
+			<div class="config-option-format">
+				<label>
+					<input type="radio" class="c-config-radio"  ng-model="config.Rotate" ng-value="false">
+					<img src="Scripts/app/editor/symbols/ext/Icons/sin-right.png" width="30" height="30"/>				
+				</label>
+				<label>
+					<input type="radio" class="c-config-radio"  ng-model="config.Rotate" ng-value="true">
+					<img src="Scripts/app/editor/symbols/ext/Icons/sin-down.png" width="30" height="30"/>
+				</label>		
+			</div>	
+		
+		
+		</div>
+		       
+    </li>
+
+    <li class="k-item k-state-active" role="menuitem">
+		<span class="k-link k-header">
+			<span>Trace Format</span>
+			<span class="k-icon k-i-arrow-n k-panelbar-collapse"></span>
+		</span>
+		<div role="region"> 
+			
+			<div class="config-option-format">   
+				Selected Trace:
+				<select class="trend-config-option-list" ng-init="config.selectedStream = config.Graphs[0]" ng-model="config.selectedStream" ng-options="graph.title for graph in config.Graphs" style="margin-top: 10px; background-color: white"></select>
+			</div>
+			
+			<div class="config-option-format">   
+				
+				<div ng-repeat="graph in config.Graphs | filter: config.selectedStream">
+				
+				<cs-color-picker colorkeyword="Line Color:" ng-model="graph.lineColor" config="config"></cs-color-picker>
+				
+				<div class="config-option-single-row" style="margin: 4px 0;">
+                        <div class="config-option-ie11-overflow-fix">
+                            <div class="config-label">Line Weight:</div>
+                            <input class="config-option-single-row-input" type="range" min="0.7" max="4.7" step="0.5" ng-model="graph.lineThickness" style="width:100px; height:100%;" title="4.7">
+                        </div>
+                    </div>
+				
+				        <div >
+							Marker Type<br />
+							<select class="trend-config-option-list"  ng-model="graph.bullet" ng-options="bullet for bullet in config.Bullets" style="margin-top: 10px;"></select>
+							
+						</div>
+				
+				
+				</div>
+				
+			</div>
+		    
+		</div>
+    </li>
+</ul>
