@@ -31,6 +31,8 @@
 			<div class="config-option-format">   
 				placeholder for 
 				min.max scale settings
+				
+				placeholder for label Date Format
 			</div>			
 		
 		</div>
@@ -86,8 +88,16 @@
 			<div class="config-option-format">   
 				
 				<div ng-repeat="graph in config.Graphs | filter: config.selectedStream">
-				
-					<cs-color-picker colorkeyword="Line Color:" ng-model="graph.lineColor" config="config"></cs-color-picker>
+					<div >
+							<div >
+								Trace Type<br />
+								<select class="trend-config-option-list"  ng-model="graph.type" ng-options="type for type in config.GraphTypes" style="margin-top: 10px;"></select>						
+							</div>
+					</div>
+					<div style="margin-top: 10px;">
+						<cs-color-picker colorkeyword="Line Color:" ng-model="graph.lineColor" config="config"></cs-color-picker>
+					</div>		
+					
 					
 					<div class="config-option-single-row" style="margin: 4px 0;">
 							<div class="config-option-ie11-overflow-fix">
@@ -102,15 +112,9 @@
 								
 							</div>
 					</div>
-					
-					<div >
-							<div style="margin-top: 10px;">
-								Trace Type<br />
-								<select class="trend-config-option-list"  ng-model="graph.type" ng-options="type for type in config.GraphTypes" style="margin-top: 10px;"></select>						
-							</div>
+					<div style="margin-top: 10px;">
+						<cs-color-picker colorkeyword="Marker Color:" ng-model="graph.bulletColor" config="config"></cs-color-picker>
 					</div>
-				
-				
 				</div>
 				
 			</div>

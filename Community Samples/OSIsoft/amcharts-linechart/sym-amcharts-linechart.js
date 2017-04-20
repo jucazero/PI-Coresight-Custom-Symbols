@@ -155,8 +155,6 @@
 		function initGraphs(datasources){
 			return datasources.map(function(item, index){
 				var isAttribute = /af:/.test(item);
-				console.log(item);
-				console.log(isAttribute);
 				var label = isAttribute ? item.match(/\w*\|.*$/)[0] : item.match(/(\w+)\?*[0-9]*$/)[1];
 				return {
 						balloonText: "<b> [[title]] </b><br/>Value: [[Value"+index+"]]",
@@ -165,7 +163,8 @@
 						bullet: "round",
 						lineColor: '#'+Math.floor(Math.random()*16777215).toString(16),
 						lineThickness: 1,
-						type: "line"
+						type: "line",
+						bulletColor: "rgba(0,0,0,0)"
 					//	connect: false
 				}
 				
@@ -181,7 +180,8 @@
 					bullet: graph.bullet,
 					lineColor: graph.lineColor,
 					lineThickness: graph.lineThickness,
-					type: graph.type
+					type: graph.type,
+					bulletColor: graph.bulletColor
 			//		connect: graph.connect
 				};
 				
