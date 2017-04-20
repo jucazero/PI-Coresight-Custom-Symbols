@@ -69,6 +69,11 @@
 			"none","round","square", "triangleUp", "triangleDown", "bubble"//, "custom"
 		];
 		
+		scope.config.GraphTypes = [
+			"line", "column", "step", "smoothedLine"
+		];
+		
+		
 		scope.config.DataSources = scope.symbol.DataSources;
 		scope.config.Graphs = scope.config.Graphs.length > 0 ? scope.config.Graphs : initGraphs(scope.config.DataSources);
 	
@@ -125,12 +130,7 @@
 			return _.chain(newdata.Data)
 					.map(function(dataArray,index){
 						return dataArray.Values.map(function(dataitem){
-								var convertedDataItem = {};
-								convertedDataItem['Value' + index.toString()] = dataitem.Value;
-								convertedDataItem['Time'] = dataitem.Time;
-								convertedDataItem['DateTime'] = new Date(dataitem.Time);
-								return convertedDataItem;
-								//return {['Value' + index.toString()] : dataitem.Value, Time: dataitem.Time, DateTime: new Date(dataitem.Time)};
+								return _.object(['Value' + index, 'Time', 'DateTime'], [dataitem.Value, dataitem.Time, new Date(dataitem.Time)]); 
 							});
 					})
 					.flatten()
@@ -165,6 +165,7 @@
 						bullet: "round",
 						lineColor: '#'+Math.floor(Math.random()*16777215).toString(16),
 						lineThickness: 1,
+						type: "line"
 					//	connect: false
 				}
 				
@@ -180,6 +181,7 @@
 					bullet: graph.bullet,
 					lineColor: graph.lineColor,
 					lineThickness: graph.lineThickness,
+					type: graph.type
 			//		connect: graph.connect
 				};
 				

@@ -52,7 +52,7 @@
 			<div class="config-option-format">
 				<div class="config-option-single-row" style="margin: 4px 0;">
 					<div class="config-label">Label Rotation:</div>
-					<input class="config-option-single-row-input" type="range" min="0" max="360" step="5" ng-model="config.LabelRotation" style="width:100px; height:100%;" title="0">
+					<input class="config-option-single-row-input" type="range" min="0" max="360" step="5" ng-model="config.LabelRotation" style="width:100px; height:100%;" title="{{config.LabelRotation}}">
 				</div>
 			</div>
 			<div class="config-option-format">
@@ -87,20 +87,28 @@
 				
 				<div ng-repeat="graph in config.Graphs | filter: config.selectedStream">
 				
-				<cs-color-picker colorkeyword="Line Color:" ng-model="graph.lineColor" config="config"></cs-color-picker>
-				
-				<div class="config-option-single-row" style="margin: 4px 0;">
-                        <div class="config-option-ie11-overflow-fix">
-                            <div class="config-label">Line Weight:</div>
-                            <input class="config-option-single-row-input" type="range" min="0.7" max="4.7" step="0.5" ng-model="graph.lineThickness" style="width:100px; height:100%;" title="4.7">
-                        </div>
-                    </div>
-				
-				        <div >
-							Marker Type<br />
-							<select class="trend-config-option-list"  ng-model="graph.bullet" ng-options="bullet for bullet in config.Bullets" style="margin-top: 10px;"></select>
-							
-						</div>
+					<cs-color-picker colorkeyword="Line Color:" ng-model="graph.lineColor" config="config"></cs-color-picker>
+					
+					<div class="config-option-single-row" style="margin: 4px 0;">
+							<div class="config-option-ie11-overflow-fix">
+								<div class="config-label">Line Weight:</div>
+								<input class="config-option-single-row-input" type="range" min="0.7" max="4.7" step="0.5" ng-model="graph.lineThickness" style="width:100px; height:100%;" title="{{graph.lineThickness}}">
+							</div>
+					</div>
+					<div >
+							<div >
+								Marker Type<br />
+								<select class="trend-config-option-list"  ng-model="graph.bullet" ng-options="bullet for bullet in config.Bullets" style="margin-top: 10px;"></select>
+								
+							</div>
+					</div>
+					
+					<div >
+							<div style="margin-top: 10px;">
+								Trace Type<br />
+								<select class="trend-config-option-list"  ng-model="graph.type" ng-options="type for type in config.GraphTypes" style="margin-top: 10px;"></select>						
+							</div>
+					</div>
 				
 				
 				</div>
