@@ -161,7 +161,7 @@
 				var isAttribute = /af:/.test(item);
 				var label = isAttribute ? item.match(/\w*\|.*$/)[0] : item.match(/(\w+)\?*[0-9]*$/)[1];
 				return {
-						balloonText: "[[title]] <br> <span style='font-size:13px'>[[Time]]</span><br><span style='font-size:18px'>[[Value" + index + "]]</span>",
+						balloonText: "<span style='font-size:13px'>[[title]]</span><br> <span style='font-size:18px'>[[Time]]</span><br><span style='font-size:18px'>[[Value" + index + "]]</span>",
 						/* <b> [[title]] </b><br>[[Time]] <br> [[Value"+index+@"]]" */
 						title: label,
 						valueField: "Value" + index,
