@@ -2,7 +2,8 @@
 	<table  class="table">
 		<thead style="color:white;">
 		  <tr >
-			 <th><b>Attribute</b></th>
+			<th ng-show="config.showFriendlyAttName"><b>Name</b></th>
+			 <th ng-show="config.showAttribute" ><b>Attribute</b></th>
 			 <th ng-show="config.showTimestamp"><b>Timestamp</b></th>
 			 <th><b>Value</b></th>
 			 <th><b>Select All  </b><input type="checkbox" style="vertical-align: middle;" ng-model="config.isAllSelected" ng-change="toggleAll(streamList)"/></th>
@@ -10,7 +11,8 @@
 		</thead>
 		<tbody>
 			<tr ng-repeat="stream in streamList" >
-				<td style="color: white; text-align: left; vertical-align: middle;">{{stream.Label}}</td>
+				<td ng-show="config.showFriendlyAttName" style="color: white; text-align: left; vertical-align: middle;"><input type="text" style="color:white; background-color:transparent; border-color:transparent" ng-model="config.streamFriendlyNames[$index]"/></td>
+				<td ng-show="config.showAttribute" style="color: white; text-align: left; vertical-align: middle;">{{stream.Label}}</td>
 				<td style="vertical-align: middle;" ng-show="config.showTimestamp" ><input type="text" ng-model="stream.Timestamp"/></td>
 				<td style="vertical-align: middle;">
 					<input ng-if="!stream.IsEnumerationType" type="{{stream.Type}}" ng-model="stream.Value" ng-style="{'width': config.valColWidth, 'max-width': '300px'}" />

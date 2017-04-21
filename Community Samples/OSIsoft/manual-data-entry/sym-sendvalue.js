@@ -17,7 +17,10 @@
 				btnHeight: 26,
 				btnText: "Update",
 				showTimestamp: false,
-				valColWidth: 150
+				showAttribute: true,
+				showFriendlyAttName: false,
+				valColWidth: 150,
+				streamFriendlyNames: []
 			};
 		},
 	    configOptions: function () {
@@ -65,6 +68,8 @@
 				if(newdatasoucres.length > 0){
 					getstreams(newdatasoucres).then(function(newstreams){
 						scope.streamList = scope.streamList.concat(newstreams);
+						var newNames = getFriendlyNameList(newstreams);
+						scope.config.streamFriendlyNames = scope.config.streamFriendlyNames.concat(newNames);
 					});					
 				}
             }
@@ -72,8 +77,13 @@
 		
 		getstreams(scope.symbol.DataSources).then(function(streams){
 			scope.streamList = streams;
+			scope.config.streamFriendlyNames =  scope.config.streamFriendlyNames.length > 0 ? scope.config.streamFriendlyNames : getFriendlyNameList(scope.streamList);
 			//console.log('streams', streams);
 		});
+		
+		function getFriendlyNameList(streamlist){
+			return _(streamlist).pluck('FriendlyName');
+		};
 				
 		function getstreams(datasources){
 			//Breaking chains: http://stackoverflow.com/questions/28250680/how-do-i-access-previous-promise-results-in-a-then-chain
@@ -81,11 +91,14 @@
 								var isAttribute = /af:/.test(item);
 								var path = isAttribute ? item.replace(/af\:(.*)/,'$1') : item.replace(/pi\:(\\\\.*)\?{1}.*(\\.*)\?{1}.*/,'$1$2');
 								var label = isAttribute ? path.match(/\w*\|.*$/)[0] : path.match(/\w+$/)[0];
+								var friendlyName = isAttribute ? label.match(/\|(.*$)/)[1] : label;
+								
 							
 								return {IsAttribute: isAttribute,
 										Path: path, 
 										Label: label,
 										IsSelected: false, 
+										FriendlyName: friendlyName,
 										Value: undefined, 
 										Timestamp: scope.config.defaultTimestamp};
 							});
