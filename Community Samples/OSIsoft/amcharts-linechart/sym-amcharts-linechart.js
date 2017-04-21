@@ -112,7 +112,7 @@
         };
 			
 		function dataUpdate(newdata) { 
-			// console.log('newdata',newdata);
+			 console.log('newdata',newdata);
 			if (!newdata || !chart) return;
 			var dataprovider = convertToChartDataFormat(newdata);		
 			//console.log('dataprovider', dataprovider);
@@ -130,7 +130,11 @@
 			return _.chain(newdata.Data)
 					.map(function(dataArray,index){
 						return dataArray.Values.map(function(dataitem){
-								return _.object(['Value' + index, 'Time', 'DateTime'], [dataitem.Value, dataitem.Time, new Date(dataitem.Time)]); 
+								var datetime = new Date(dataitem.Time);
+								var starttime = new Date(dataArray.StartTime);
+								return datetime > starttime 
+										? _.object(['Value' + index, 'Time', 'DateTime'], [dataitem.Value, dataitem.Time, datetime])
+										: undefined;
 							});
 					})
 					.flatten()
