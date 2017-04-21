@@ -112,7 +112,7 @@
         };
 			
 		function dataUpdate(newdata) { 
-			 console.log('newdata',newdata);
+			//console.log('newdata',newdata);
 			if (!newdata || !chart) return;
 			var dataprovider = convertToChartDataFormat(newdata);		
 			//console.log('dataprovider', dataprovider);
@@ -132,7 +132,7 @@
 						return dataArray.Values.map(function(dataitem){
 								var datetime = new Date(dataitem.Time);
 								var starttime = new Date(dataArray.StartTime);
-								return datetime > starttime 
+								return datetime >= starttime 
 										? _.object(['Value' + index, 'Time', 'DateTime'], [dataitem.Value, dataitem.Time, datetime])
 										: undefined;
 							});
@@ -161,7 +161,8 @@
 				var isAttribute = /af:/.test(item);
 				var label = isAttribute ? item.match(/\w*\|.*$/)[0] : item.match(/(\w+)\?*[0-9]*$/)[1];
 				return {
-						balloonText: "<b> [[title]] </b><br/>Value: [[Value"+index+"]]",
+						balloonText: "[[title]] <br> <span style='font-size:13px'>[[Time]]</span><br><span style='font-size:18px'>[[Value" + index + "]]</span>",
+						/* <b> [[title]] </b><br>[[Time]] <br> [[Value"+index+@"]]" */
 						title: label,
 						valueField: "Value" + index,
 						bullet: "round",
@@ -209,19 +210,17 @@
 							"position": "left",
 							"title": "Value"
 						}],    
+						"categoryField": "Time",
 						"categoryAxis": {
 							"title": "Time",
 							"labelRotation": config.LabelRotation,
-						//	"parseDates": true,
-							"type": "date",
-						/*  	"labelFunction": function(t,date) {
-								console.log(date);
-								return moment(date, "DD-MM-YYYY HH");
-							}  */
+							"parseDates": true,
+							"minPeriod":"ss",
+							"type": "date"
+
 						},
 						"graphs": getGraphs(config.Graphs),					 
-						"dataProvider": "",
-						"categoryField": "Time",
+						"dataProvider": "",						
 						"chartCursor": { 
 						//	"cursorColor": "gray",
 							"valueLineBalloonEnabled": true,
@@ -234,7 +233,10 @@
 							"useGraphSettings": true,
 							"position": "right"
 							
-						}
+						},
+						/* "chartScrollbar": {
+							"enabled": true
+						} */
 					}
         }
 
