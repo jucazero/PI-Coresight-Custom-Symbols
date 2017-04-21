@@ -41,7 +41,7 @@
 				TextColor: "#ffffff",
 				Graphs: [],
 				Rotate: false,
-				LabelRotation: 0
+				LabelRotation: 15
 				
             };
 		},
