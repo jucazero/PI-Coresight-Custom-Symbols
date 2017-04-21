@@ -1,62 +1,80 @@
-<div class="c-side-pane t-toolbar">
-    <span style="color:#fff; margin-left:15px">Table Settings</span>
-</div>
+<ul kendo-panel-bar class="t-side-panel-bgcolor" style="font-size: 14px;" role="menu">
+    <li class="k-item k-state-active" role="menuitem">
+        <span class="k-link k-header">
+			<span>Column Settings</span>
+			<span class="k-icon k-i-arrow-n k-panelbar-collapse"></span>
+		</span>
+		<div role="region"> 
+			<div class="config-option-single-row" style="margin-left:20px; font-size: 14px; display:block">
+				<div class="config-label">Default timestamp</div>
+				<input class="flex-align-center" style="margin-top:8px; padding-right: 35px" type="text" ng-model="config.defaultTimestamp"/>
+			</div>	
+		
+			<div class="config-option-single-row" style="margin-left:20px; font-size: 14px; ">
+				<div class="config-label">Show timestamp</div>
+				<input class="flex-align-center" style="margin-top:8px; margin-right: 35px;" type="checkbox" ng-model="config.showTimestamp"/>
+			</div>
+			<div class="config-option-single-row" style="margin-left:20px; font-size: 14px; ">
+				<div class="config-label" style="font-size: 14px;">Value Width</div>
+				<input type="range" ng-model="config.valColWidth" step="1" min="50" max="200" style="width:100px; height:100%; float: right; margin-right:35px;" title="{{config.valColWidth}}">
+			</div>	
+		</div>
+    </li>
+    <li class="k-item k-state-active" role="menuitem">
+        <span class="k-link k-header">
+			<span>Button Settings</span>
+			<span class="k-icon k-i-arrow-n k-panelbar-collapse"></span>
+		</span>
+		<div role="region"> 
+			<div class="config-option-format">
+				<cs-color-picker colorkeyword="Background" ng-model="config.bgColor" config="config"></cs-color-picker>
+			</div>
+
+			<div class="config-option-single-row" style="margin-left:20px; font-size: 14px;">
+				<div class="config-label">Text</div>
+				<input type="text" ng-model="config.btnText"  style="width:100px; height:100%; float: right; margin-right:35px;" class="ng-pristine ng-valid ng-touched">
+			</div>		
+			
+			<div class="config-option-format">
+				<cs-color-picker colorkeyword="Text" ng-model="config.textColor" config="config"></cs-color-picker>
+			</div>	
+			<div class="config-option-single-row" style="margin-left:20px; font-size: 14px;">
+				<div class="config-label">Width</div>
+				<input type="range" class="config-option-single-row-input" ng-model="config.btnWidth" step="1" min="40" max="200" style="width:100px; height:100%;  margin-right:35px;" title="{{config.btnWidth}}" >
+			</div>
+ 			<div class="config-option-single-row" style="margin-left:20px; font-size: 14px;">
+				<div class="config-label">Height</div>
+				<input type="range" ng-model="config.btnHeight" min="1" max="200" step="1" style="width:100px; height:100%; margin-right:35px;" title="{{config.btnHeight}}" >
+			</div> 
+		</div>
+
+    </li>
+	<li class="k-item" role="menuitem">
+        <span class="k-link k-header">
+			<span>About</span>
+			<span class="k-icon k-i-arrow-n k-panelbar-collapse"></span>
+		</span>
+		<div role="region"> 
+			<div class="config-option-format">   
+				This is an example of custom symbol made with the PI Vision Extensibility Framework.
+			</div>	
+			<div class="config-option-format">   
+				<a  href="https://github.com/AnnaPerry/PI-Coresight-Custom-Symbols/tree/master/Community%20Samples/OSIsoft/manual-data-entry" target="_blank" >
+					<img style="vertical-align:middle" src="Scripts/app/editor/symbols/ext/Icons/GitHub-Mark-32px.png" alt="GitHub repository with source code" height="32" width="32"/>
+				</a>
+				<span>Explore source code.</span>
+			</div>	
+			<div class="config-option-format">   
+				<a href="https://pisquare.osisoft.com/community/developers-club/pi-visualization-development" target="_blank" >
+					<img style="vertical-align:middle" src="Scripts/app/editor/symbols/ext/Icons/Q.png" alt="PI Square public forum" height="32" width="32"/>
+				</a>	
+				Need help? Ask PI Square.
+			</div>					
+		</div>
+		
+		
+    </li>
 
 
-<div class="c-config-content">
-Default timestamp:
-<input class="flex-align-center" style="margin-top:8px; margin-left: 8px;" type="text" ng-model="config.defaultTimestamp"/>
-</div>
 
-<div class="c-config-content">
-Show timestamp:
-<input class="flex-align-center" style="margin-top:8px; margin-left: 8px;" type="checkbox" ng-model="config.showTimestamp"/>
-</div>
-
-
-<div class="config-option-single-row" style="margin-left:20px; font-size: 14px;">
-<div class="config-label" style="font-size: 14px;">Value Column Width</div>
-<input type="range" ng-model="config.valColWidth" min="50" max="200" style="width:100px; height:100%; float: right; margin-right:35px;" title="40" class="ng-pristine ng-valid ng-touched">
-</div>
-<br>
-
-<div class="c-side-pane t-toolbar">
-    <span style="color:#fff; margin-left:15px">Button Background</span>
-</div>
-<div class="config-option-format">
- 
-	<cs-color-picker ng-model="config.bgColor" config="config">
-</cs-color-picker></div>	
-
-<div class="c-side-pane t-toolbar">
-    <span style="color:#fff; margin-left:15px">Button Text</span>
-</div>
-
-<div class="config-option-single-row" style="margin-left:20px; font-size: 14px;">
-    <div class="config-label">Label</div>
-        <input type="text" ng-model="config.btnText"  style="width:100px; height:100%; float: right; margin-right:35px;" class="ng-pristine ng-valid ng-touched">
-</div>
-
-
-
-<div class="config-option-format">
-	<cs-color-picker ng-model="config.textColor" config="config">
-</cs-color-picker></div>	
-
-
-
-
-
-
-<div class="c-side-pane t-toolbar">
-    <span style="color:#fff; margin-left:15px">Button Size</span>
-</div>
-
-<div class="config-option-single-row" style="margin-left:20px; font-size: 14px;">
-    <div class="config-label">Width</div>
-        <input type="range" ng-model="config.btnWidth" min="40" max="200" style="width:100px; height:100%; float: right; margin-right:35px;" title="40" class="ng-pristine ng-valid ng-touched">
-</div>
-<div class="config-option-single-row" style="margin-left:20px; font-size: 14px;">
-    <div class="config-label">Height</div>
-        <input type="range" ng-model="config.btnHeight" min="10" max="200" style="width:100px; height:100%; float: right; margin-right:35px;" title="26" class="ng-pristine ng-valid ng-touched">
-</div>
+</ul> 

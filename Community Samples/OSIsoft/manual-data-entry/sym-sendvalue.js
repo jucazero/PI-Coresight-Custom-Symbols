@@ -1,6 +1,7 @@
 (function (CS) {
 	var definition = {
 	    typeName: 'sendvalue',
+		displayName: 'Manual Data Entry',
 	    datasourceBehavior:  CS.Extensibility.Enums.DatasourceBehaviors.Multiple,
 		visObjectType: symbolVis,
         iconUrl: '/Scripts/app/editor/symbols/ext/Icons/paper-plane-xxl.png',
@@ -12,11 +13,11 @@
 				defaultTimestamp: '*',
 				bgColor: "#239a23",
 				textColor: "#fff",
-				btnWidth: "80px",
-				btnHeight: "26px",
+				btnWidth: 80,
+				btnHeight: 26,
 				btnText: "Update",
 				showTimestamp: false,
-				valColWidth: "150px"
+				valColWidth: 150
 			};
 		},
 	    configOptions: function () {
@@ -171,7 +172,6 @@
 									]
 						}]);	
 		};
-			
 			
 		function isEnumerationType(stream){
 			return _.has(stream.Content, "Type") && stream.Content.Type == "EnumerationValue";
