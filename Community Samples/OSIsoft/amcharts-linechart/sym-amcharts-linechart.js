@@ -41,7 +41,7 @@
 				TextColor: "#ffffff",
 				Graphs: [],
 				Rotate: false,
-				LabelRotation: 15
+				LabelRotation: 0
 				
             };
 		},
@@ -78,7 +78,16 @@
 		scope.config.Graphs = scope.config.Graphs.length > 0 ? scope.config.Graphs : initGraphs(scope.config.DataSources);
 	
 		var chart = initChart(scope.config);
-		
+		if(chart.graphs[0].lineColor == ""){
+			scope.config.Graphs.forEach(function(graph,index){
+				graph.lineColor = chart.graphs[index].lineColorR;
+				graph.bulletColor = chart.graphs[index].lineColorR;
+			});
+				
+				
+			
+			
+		}
 		
 		
 		function initChart(config){
@@ -89,6 +98,7 @@
 					
 			var customVisualizationObject = AmCharts.makeChart(symbolContainerDiv.id, chartconfig);
 			
+		
 			return customVisualizationObject;
 		};		
 		
@@ -103,7 +113,7 @@
 				chart.color = scope.config.TextColor;
 				chart.rotate = scope.config.Rotate;
 				chart.categoryAxis.labelRotation =  scope.config.LabelRotation;
-		//		console.log('test', chart);
+				//console.log('test', chart);
 				chart.validateData();
 			//	console.log('config log', scope.config.BackgroundColor);
             
@@ -166,7 +176,7 @@
 						title: label,
 						valueField: "Value" + index,
 						bullet: "round",
-						lineColor: '#'+Math.floor(Math.random()*16777215).toString(16),
+						lineColor: '', //'#'+Math.floor(Math.random()*16777215).toString(16),
 						lineThickness: 1,
 						type: "line",
 						bulletColor: "rgba(0,0,0,0)"
