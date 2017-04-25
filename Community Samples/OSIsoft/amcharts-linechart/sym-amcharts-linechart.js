@@ -113,7 +113,7 @@
 				chart.color = scope.config.TextColor;
 				chart.rotate = scope.config.Rotate;
 				chart.categoryAxis.labelRotation =  scope.config.LabelRotation;
-				//console.log('test', chart);
+				console.log('test', chart);
 				chart.validateData();
 			//	console.log('config log', scope.config.BackgroundColor);
             
@@ -179,7 +179,8 @@
 						lineColor: '', //'#'+Math.floor(Math.random()*16777215).toString(16),
 						lineThickness: 1,
 						type: "line",
-						bulletColor: "rgba(0,0,0,0)"
+						bulletColor: "rgba(0,0,0,0)",
+						fixedColumnWidth: 25
 					//	connect: false
 				}
 				
@@ -196,7 +197,8 @@
 					lineColor: graph.lineColor,
 					lineThickness: graph.lineThickness,
 					type: graph.type,
-					bulletColor: graph.bulletColor
+					bulletColor: graph.bulletColor,
+					fixedColumnWidth: parseInt(graph.fixedColumnWidth)
 			//		connect: graph.connect
 				};
 				
@@ -216,6 +218,7 @@
 						//"creditsPosition": "bottom-right",
 						//"titles": createArrayOfChartTitles(),
                         //"fontSize": 12,
+						
 						"valueAxes": [{
 							"position": "left",
 							"title": "Value"
@@ -226,7 +229,7 @@
 							"labelRotation": config.LabelRotation,
 							"parseDates": true,
 							"minPeriod":"ss",
-							"type": "date"
+						//	"type": "date"
 
 						},
 						"graphs": getGraphs(config.Graphs),					 

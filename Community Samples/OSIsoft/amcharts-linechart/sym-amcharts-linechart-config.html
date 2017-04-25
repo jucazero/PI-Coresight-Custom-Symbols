@@ -98,6 +98,12 @@
 						<cs-color-picker colorkeyword="Line Color:" ng-model="graph.lineColor" config="config"></cs-color-picker>
 					</div>		
 					
+					<div class="config-option-single-row" style="margin: 4px 0;" ng-show="graph.type == 'column'">
+							<div class="config-option-ie11-overflow-fix">
+								<div class="config-label">Column Width:</div>
+								<input class="config-option-single-row-input" type="range" min="5" max="60" step="1" ng-model="graph.fixedColumnWidth" style="width:100px; height:100%;" title="{{graph.fixedColumnWidth}}">
+							</div>
+					</div>
 					
 					<div class="config-option-single-row" style="margin: 4px 0;">
 							<div class="config-option-ie11-overflow-fix">
