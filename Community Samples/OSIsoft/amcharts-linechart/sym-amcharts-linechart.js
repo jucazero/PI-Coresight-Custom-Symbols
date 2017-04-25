@@ -13,7 +13,6 @@
 # * AND FITNESS FOR A PARTICULAR PURPOSE ARE EXPRESSLY DISCLAIMED.
 # ************************************************************************
 #
-# Updated by dlopez@osisoft.com
 # Visualizations provided by amCharts: https://www.amcharts.com/
 #
 **/
