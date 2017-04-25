@@ -1,6 +1,8 @@
 ## Line Chart symbol for PI Coresight 2016 R2.
 
 This symbol is a work in progress.
+<img src="https://github.com/AnnaPerry/PI-Coresight-Custom-Symbols/blob/master/Community%20Samples/OSIsoft/amcharts-linechart/ExampleofLineChart.png" 
+alt="Line Chart for PI Coresight" />
 
 ## To deploy the symbol: 
 
