@@ -109,17 +109,27 @@
 		function configChange(newConfig, oldConfig) {
 			
             if (chart && newConfig && oldConfig && !angular.equals(newConfig, oldConfig)) {			
-			
-				console.log('newConfig',newConfig);
+				var newdatasoucres = _.difference(newConfig.DataSources, oldConfig.DataSources);
+					if(newdatasoucres.length > 0){
+						var newGraphs = initGraphs(newdatasoucres);
+						var index = scope.config.Graphs.length;
+						scope.config.Graphs =  scope.config.Graphs.concat(newGraphs);
+
+					}
+    
+				//console.log('newConfig',newConfig);
 				//console.log('chart',chart);
-				chart.graphs = getGraphs(newConfig.Graphs);
+				chart.graphs = getGraphs(scope.config.Graphs);
 				chart.color = scope.config.TextColor;
 				chart.rotate = scope.config.Rotate;
 				chart.categoryAxis.labelRotation =  scope.config.LabelRotation;
 				chart.legend.position = scope.config.LegendPosition;
-				console.log('test', chart);
+			//	console.log('test', chart);
+				
+				
+
 				chart.validateData();
-			//	console.log('config log', scope.config.BackgroundColor);
+				//	console.log('config log', scope.config.BackgroundColor);
             
 			}
 			
@@ -171,9 +181,11 @@
 
 		
 		function initGraphs(datasources){
-			return datasources.map(function(item, index){
+			return datasources.map(function(item){
 				var isAttribute = /af:/.test(item);
 				var label = isAttribute ? item.match(/\w*\|.*$/)[0] : item.match(/(\w+)\?*[0-9]*$/)[1];
+				var index = scope.symbol.DataSources.indexOf(item);
+				
 				return {
 						balloonText: "<span style='font-size:13px'>[[title]]</span><br> <span style='font-size:18px'>[[Time]]</span><br><span style='font-size:18px'>[[Value" + index + "]]</span>",
 						/* <b> [[title]] </b><br>[[Time]] <br> [[Value"+index+@"]]" */
