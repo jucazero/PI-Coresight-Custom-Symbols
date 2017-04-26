@@ -40,7 +40,8 @@
 				TextColor: "#ffffff",
 				Graphs: [],
 				Rotate: false,
-				LabelRotation: 0
+				LabelRotation: 0,
+				LegendPosition: "right"
 				
             };
 		},
@@ -72,6 +73,9 @@
 			"line", "column", "step", "smoothedLine"
 		];
 		
+		scope.config.Positions = [
+			"left", "right", "top", "bottom"
+		];
 		
 		scope.config.DataSources = scope.symbol.DataSources;
 		scope.config.Graphs = scope.config.Graphs.length > 0 ? scope.config.Graphs : initGraphs(scope.config.DataSources);
@@ -106,12 +110,13 @@
 			
             if (chart && newConfig && oldConfig && !angular.equals(newConfig, oldConfig)) {			
 			
-				//console.log('newConfig',newConfig);
+				console.log('newConfig',newConfig);
 				//console.log('chart',chart);
 				chart.graphs = getGraphs(newConfig.Graphs);
 				chart.color = scope.config.TextColor;
 				chart.rotate = scope.config.Rotate;
 				chart.categoryAxis.labelRotation =  scope.config.LabelRotation;
+				chart.legend.position = scope.config.LegendPosition;
 				console.log('test', chart);
 				chart.validateData();
 			//	console.log('config log', scope.config.BackgroundColor);
@@ -243,12 +248,12 @@
 						"legend": {
 							"enabled": true,
 							"useGraphSettings": true,
-							"position": "right"
+							"position": config.LegendPosition
 							
 						},
-						/* "chartScrollbar": {
-							"enabled": true
-						} */
+						"chartScrollbar": {
+							"enabled": false
+						} 
 					}
         }
 

@@ -48,7 +48,7 @@
 		<div role="region">
 	
 			<div class="config-option-format">   
-				Enable / disable Markers (bullets)
+				placeholder to Enable / disable Markers (bullets)
 			</div>	
 			
 			<div class="config-option-format">
@@ -68,7 +68,12 @@
 				</label>		
 			</div>	
 		
-			
+			<div class="config-option-format">
+				<div >
+					Legend Position<br />
+					<select class="trend-config-option-list"  ng-model="config.LegendPosition" ng-options="position for position in config.Positions" style="margin-top: 10px;"></select>						
+				</div>
+			</div>
 		</div>
 		       
     </li>
