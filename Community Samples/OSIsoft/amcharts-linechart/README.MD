@@ -1,6 +1,9 @@
-## Line Chart symbol for PI Coresight 2016 R2.
+## Line Chart symbol
 
 This symbol is a work in progress.
+
+This symbol is for PI Coresight version 2016 R2. Scroll down for the instructions on how to upgrade it to PI Vision 2017.
+
 <img src="https://github.com/AnnaPerry/PI-Coresight-Custom-Symbols/blob/master/Community%20Samples/OSIsoft/amcharts-linechart/ExampleofLineChart.png" 
 alt="Line Chart for PI Coresight" />
 
@@ -22,11 +25,15 @@ If this folder doesn't exist, create it.
 5. Place the amCharts libraries (*amcharts.js*, *dark.js* and *serial.js*) to the .\ext\libraries folder.
 6. Run iisreset
 
+## Upgrade to PI Vision 2017
 
-To convert this symbol to PI Vision 2017, replace the last line in the sym-amcharts-linechart.js file with 
-*})(window.PIVisualization)*;
+To upgrade this symbol to PI Vision 2017,
+
+1. Replace the last line in the sym-amcharts-linechart.js file with **})(window.PIVisualization)**;
+
+I.e.
+
+})(window.Coresight); => })(window.PIVisualization);
 
 
-I.e. 
-
-})(window.Coresight);      =>     })(window.PIVisualization);
+2. In the sym-amcharts-linechart-config.html, replace all occurances of **cs-color-picker** with **pv-color-picker**.
