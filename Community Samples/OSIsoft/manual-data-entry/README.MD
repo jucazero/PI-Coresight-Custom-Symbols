@@ -45,11 +45,13 @@ alt="Manual Data Entry for PI Coresight" width="500" height="300" border="10" />
 
 ## Upgrade to PI Vision 2017
 
-To upgrade this symbol to PI Vision 2017, replace the last line in the sym-sendvalue.js file with **})(window.PIVisualization)**;
+To upgrade this symbol to PI Vision 2017,
+
+1. Replace the last line in the sym-sendvalue.js file with **})(window.PIVisualization)**;
 
 I.e.
 
 })(window.Coresight); => })(window.PIVisualization);
 
 
-In the sym-sendvalue-config.html, replace all occurances of **cs-color-picker** with **pv-color-picker**.
+2. In the sym-sendvalue-config.html, replace all occurances of **cs-color-picker** with **pv-color-picker**.
