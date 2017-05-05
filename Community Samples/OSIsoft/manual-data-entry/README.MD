@@ -50,3 +50,6 @@ To upgrade this symbol to PI Vision 2017, replace the last line in the sym-sendv
 I.e.
 
 })(window.Coresight); => })(window.PIVisualization);
+
+
+In the sym-sendvalue-config.html, replace all occurances of **cs-color-picker** with **pv-color-picker**.
