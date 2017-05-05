@@ -1,4 +1,6 @@
-## Manual Data Entry symbol: 
+## Manual Data Entry symbol  
+
+This symbol is for PI Coresight version 2016 R2. Scroll down for the instructions on how to upgrade it to PI Vision 2017.
 
 <img src="https://github.com/AnnaPerry/PI-Coresight-Custom-Symbols/blob/master/Community%20Samples/OSIsoft/manual-data-entry/Example.png" 
 alt="Manual Data Entry for PI Coresight" />
@@ -39,3 +41,12 @@ I found the following video helpful when trying get CORS working without having 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=CUklG6o9yHc
 " target="_blank"><img src="http://img.youtube.com/vi/CUklG6o9yHc/0.jpg" 
 alt="Manual Data Entry for PI Coresight" width="500" height="300" border="10" /></a>
+
+
+## Upgrade to PI Vision 2017
+
+To upgrade this symbol to PI Vision 2017, replace the last line in the sym-sendvalue.js file with **})(window.PIVisualization)**;
+
+I.e.
+
+})(window.Coresight); => })(window.PIVisualization);
