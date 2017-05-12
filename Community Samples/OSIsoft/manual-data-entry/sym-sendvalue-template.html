@@ -6,7 +6,7 @@
 			 <th ng-show="config.showAttribute" ><b>Attribute</b></th>
 			 <th ng-show="config.showTimestamp"><b>Timestamp</b></th>
 			 <th><b>Value</b></th>
-			 <th><b>Select All  </b><input type="checkbox" style="vertical-align: middle;" ng-model="config.isAllSelected" ng-change="toggleAll(streamList)"/></th>
+			 <th><b>Select All  </b><input type="checkbox" style="vertical-align: middle;" ng-model="isAllSelected" ng-change="toggleAll(streamList)"/></th>
 		  </tr>
 		</thead>
 		<tbody>
@@ -32,6 +32,6 @@
 																				'margin-left': 'auto',
 																				'border': '1px solid rgba(230,231,232,.55)',
 																				'opacity': isBtnEnabled ? '1' : '0.65'}">
-<img src="Scripts/app/editor/symbols/ext/Icons/loading.gif" ng-show="config.loading" />
+<img src="Scripts/app/editor/symbols/ext/Icons/loading.gif" ng-show="loading" />
 {{config.btnText}}
 </button>

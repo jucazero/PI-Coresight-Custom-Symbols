@@ -1,4 +1,5 @@
 (function (CS) {
+	'use strict';
 	var definition = {
 	    typeName: 'sendvalue',
 		displayName: 'Manual Data Entry',
@@ -56,26 +57,43 @@
 			
 		};
 		scope.streamList = [];
-		scope.config.isAllSelected = false;
+		scope.isAllSelected = false;
 		scope.isBtnEnabled = false;
 		scope.config.DataSources = scope.symbol.DataSources;
 		
 		this.onConfigChange = configChange;
 		
 		function configChange(newConfig, oldConfig) {
+			
             if (newConfig && oldConfig && !angular.equals(newConfig, oldConfig)) {			
-				var newdatasoucres = _.difference(newConfig.DataSources, oldConfig.DataSources);
+			
+
+			var newdatasoucres = _.difference(newConfig.DataSources, oldConfig.DataSources);
+			
 				if(newdatasoucres.length > 0){
-					getstreams(newdatasoucres).then(function(newstreams){
-						scope.streamList = scope.streamList.concat(newstreams);
+					
+					
+					getStreams(newdatasoucres).then(function(newstreams){
 						var newNames = getFriendlyNameList(newstreams);
-						scope.config.streamFriendlyNames = scope.config.streamFriendlyNames.concat(newNames);
+						
+						if (newConfig.DataSources.length == oldConfig.DataSources.length){
+							//	switch in asset context
+							scope.streamList = newstreams;
+							scope.config.streamFriendlyNames = newNames;
+						}
+						else{
+							// drag & drop of a new stream
+							scope.streamList = scope.streamList.concat(newstreams);	
+							scope.config.streamFriendlyNames = scope.config.streamFriendlyNames.concat(newNames);
+						}
+						
+						
 					});					
 				}
             }
         }
 		
-		getstreams(scope.symbol.DataSources).then(function(streams){
+		getStreams(scope.symbol.DataSources).then(function(streams){
 			scope.streamList = streams;
 			scope.config.streamFriendlyNames =  scope.config.streamFriendlyNames.length > 0 ? scope.config.streamFriendlyNames : getFriendlyNameList(scope.streamList);
 			//console.log('streams', streams);
@@ -83,9 +101,9 @@
 		
 		function getFriendlyNameList(streamlist){
 			return _(streamlist).pluck('FriendlyName');
-		};
+		}
 				
-		function getstreams(datasources){
+		function getStreams(datasources){
 			//Breaking chains: http://stackoverflow.com/questions/28250680/how-do-i-access-previous-promise-results-in-a-then-chain
 			var datastreams = _.map(datasources, function(item) {
 								var isAttribute = /af:/.test(item);
@@ -149,7 +167,7 @@
 			});
 			
 			return $http.post(baseUrl + 'batch', JSON.stringify(batchRequest), {withCredentials: true});
-		};	
+		}
 		
 		function getEnumConfig(streams){
 			//TODO: handle digital pi points
@@ -165,7 +183,7 @@
 				.value();
 				
 			return enumBatchRequest;
-		};
+		}
 				
 		function getEnumRequest(enumUrl, index){
 			//using _.object() here to avoid IE compatibility issues
@@ -184,29 +202,29 @@
 										'$.EnumConfig' + index + '.Content.Links.Values'
 									]
 						}]);	
-		};
+		}
 			
 		function isEnumerationType(stream){
 			return _.has(stream.Content, "Type") && stream.Content.Type == "EnumerationValue";
-		};
+		}
 		
 		function getEnumerationOptions(enumerations, isEnumerationType, index){
 			return isEnumerationType ? enumerations["EnumValues" + index].Content.Items : ""; 
 			
-		};
+		}
 		
 		function getType(stream, isAttribute){
 			return isAttribute ? TYPES[stream.Content.Type] : TYPES[stream.Content.PointType];
-		};
+		}
 		
 		function isPIPoint(stream, isAttribute){
 			return (isAttribute && stream.Content.DataReferencePlugIn == "PI Point") || !isAttribute;
-		};
+		}
 		
 	
 	   scope.sendValues = function(){
 		   
-		scope.config.loading = true; //show button loading icon
+		scope.loading = true; //show button loading icon
 		scope.isBtnEnabled = false;   
 		   var streams = scope.streamList;
            if(!anyStreamsSelected(streams)) return;
@@ -220,7 +238,7 @@
 									
 			sendDataPromise.then(function(){
 				setTimeout(function(){
-					scope.config.loading = false;
+					scope.loading = false;
 					scope.isBtnEnabled = true;
 					}, 3000);	
 				});
@@ -229,7 +247,7 @@
         
 	   };
 	   
-	   	formBulkSendRequest = function(streamList) {
+	   	function formBulkSendRequest(streamList) {
 			
 			var batchRequest = {};
 			
@@ -260,17 +278,17 @@
 		
 	   
 		scope.toggleAll = function(){			
-			var toggleValue = scope.config.isAllSelected;
+			var toggleValue = scope.isAllSelected;
 			scope.streamList.forEach(function(stream){stream.IsSelected = toggleValue});
 			scope.isBtnEnabled  = anyStreamsSelected();
 		};
 		
 		scope.toggleStreamSelection = function(){
-			scope.config.isAllSelected = scope.streamList.every(function(stream){return(stream.IsSelected)});
+			scope.isAllSelected = scope.streamList.every(function(stream){return(stream.IsSelected)});
 			scope.isBtnEnabled  = anyStreamsSelected();
 		};
 		
-		anyStreamsSelected = function(){
+	    function anyStreamsSelected(){
 			return scope.streamList.some(function(stream){return(stream.IsSelected)});
 		};
 		
