@@ -13,13 +13,15 @@
 		        Width: 450,
 				defaultTimestamp: '*',
 				bgColor: "#239a23",
-				textColor: "#fff",
+				ButtonTextColor: "#fff",
+				TextColor: "#fff",
 				btnWidth: 80,
 				btnHeight: 26,
 				btnText: "Update",
 				showTimestamp: false,
 				showAttribute: true,
 				showFriendlyAttName: false,
+				showCurrentValue: true,
 				valColWidth: 150,
 				streamFriendlyNames: []
 			};
@@ -60,8 +62,9 @@
 		scope.isAllSelected = false;
 		scope.isBtnEnabled = false;
 		scope.config.DataSources = scope.symbol.DataSources;
-		
+
 		this.onConfigChange = configChange;
+		this.onDataUpdate = dataUpdate;
 		
 		function configChange(newConfig, oldConfig) {
 			
@@ -79,7 +82,7 @@
 						if (newConfig.DataSources.length == oldConfig.DataSources.length){
 							//	switch in asset context
 							scope.streamList = newstreams;
-							scope.config.streamFriendlyNames = newNames;
+							
 						}
 						else{
 							// drag & drop of a new stream
@@ -96,14 +99,28 @@
 		getStreams(scope.symbol.DataSources).then(function(streams){
 			scope.streamList = streams;
 			scope.config.streamFriendlyNames =  scope.config.streamFriendlyNames.length > 0 ? scope.config.streamFriendlyNames : getFriendlyNameList(scope.streamList);
-			//console.log('streams', streams);
+			
 		});
+		
+		var units;
+		
+		function dataUpdate(data){
+			if(!data ) return;
+			units = data.Rows[0].Label ? _.pluck(data.Rows, 'Units') : units;
+			if(!scope.streamList)return;
+			scope.streamList.forEach(function(stream, index){
+				stream.UOM = units[index];
+				stream.CurrentValue = data.Rows[index].Value;
+			})
+				
+			
+		}
 		
 		function getFriendlyNameList(streamlist){
 			return _(streamlist).pluck('FriendlyName');
 		}
 				
-		function getStreams(datasources){
+		function getStreams(datasources){			
 			//Breaking chains: http://stackoverflow.com/questions/28250680/how-do-i-access-previous-promise-results-in-a-then-chain
 			var datastreams = _.map(datasources, function(item) {
 								var isAttribute = /af:/.test(item);
