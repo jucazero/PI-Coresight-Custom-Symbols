@@ -54,4 +54,4 @@ I.e.
 })(window.Coresight); => })(window.PIVisualization);
 
 
-2. In the sym-sendvalue-config.html, replace all occurances of **cs-color-picker** with **pv-color-picker**.
+2. In the sym-sendvalue-config.html, replace all occurrences of **cs-color-picker** with **pv-color-picker**.
