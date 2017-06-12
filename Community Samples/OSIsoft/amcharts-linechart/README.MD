@@ -36,4 +36,4 @@ I.e.
 })(window.Coresight); => })(window.PIVisualization);
 
 
-2. In the sym-amcharts-linechart-config.html, replace all occurances of **cs-color-picker** with **pv-color-picker**.
+2. In the sym-amcharts-linechart-config.html, replace all occurrences of **cs-color-picker** with **pv-color-picker** (Hint: Ctrl+H to speed up the process).
