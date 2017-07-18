@@ -1,5 +1,5 @@
 /***************************************************************************
-   Copyright 2016 OSIsoft, LLC.
+   Copyright 2016-2017 OSIsoft, LLC.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -21,10 +21,10 @@
 	//'use strict';
 	// Specify the symbol definition	
 	var myCustomSymbolDefinition = {
-		// Specify the unique name for this symbol; this instructs PI Coresight to also
+		// Specify the unique name for this symbol; this instructs PI Vision to also
 		// look for HTML template and config template files called sym-<typeName>-template.html and sym-<typeName>-config.html
 		typeName: 'snapshotDataTable',
-		// Specify the user-friendly name of the symbol that will appear in PI Coresight
+		// Specify the user-friendly name of the symbol that will appear in PI Vision
 		displayName: 'Snapshot Data Table',
 		// Specify the number of data sources for this symbol; just a single data source or multiple
 		datasourceBehavior: CS.Extensibility.Enums.DatasourceBehaviors.Multiple,
@@ -101,16 +101,17 @@
 					$('#' + symbolContainerDiv.id + ' tbody').remove();
 				}
 				customVisualizationObject = true;
-				// Define styling variables	
-				var rowStyling = "width: 100%;border: 1px solid " + scope.config.borderColor + ";font-size: " + scope.config.fontSize + "px";
-				var labelStyling = "padding:10px;vertical-align: middle;background-color: " + scope.config.labelBackgroundColor + ";color: " + scope.config.labelColor;
-				var cellStyling  = "padding:10px;vertical-align: middle;background-color: " + scope.config.backgroundColor + ";padding-left:10px;padding-right:10px;border: 1px solid " + scope.config.borderColor + ";color: " + scope.config.textColor;
 				// Add the data item names
 				var newRow = symbolContainerDiv.insertRow(0);
-				newRow.style = rowStyling;
+				newRow.style.width = "100%";
+				newRow.style.border = "1px solid " + scope.config.borderColor;
+				newRow.style.fontSize = scope.config.fontSize + "px";
 				var labelCell = newRow.insertCell(-1);
 				labelCell.innerHTML = "Data Item";
-				labelCell.style = labelStyling;
+				labelCell.style.padding = "10px";
+				labelCell.style.verticalAlign = "middle";
+				labelCell.style.backgroundColor = scope.config.labelBackgroundColor;
+				labelCell.style.color = scope.config.labelColor;
 				for (var i = 0; i < data.Rows.length; i++) {
 					var newCell = newRow.insertCell(-1);
 					// Check if the label exists; if it does, add it to the global array
@@ -119,14 +120,22 @@
 					}
 					newCell.innerHTML = dataItemLabelArray[i];
 					// Apply padding and the specified color for this column
-					newCell.style = cellStyling;
+					newCell.style.padding = "10px";
+					newCell.style.verticalAlign = "middle";
+					newCell.style.backgroundColor = scope.config.backgroundColor;
+					newCell.style.color = scope.config.textColor;
 				}
 				// Add the data item values
 				var newRow = symbolContainerDiv.insertRow(1);
-				newRow.style = rowStyling;
+				newRow.style.width = "100%";
+				newRow.style.border = "1px solid " + scope.config.borderColor;
+				newRow.style.fontSize = scope.config.fontSize + "px";
 				var labelCell = newRow.insertCell(-1);
 				labelCell.innerHTML = "Value";
-				labelCell.style = labelStyling;
+				labelCell.style.padding = "10px";
+				labelCell.style.verticalAlign = "middle";
+				labelCell.style.backgroundColor = scope.config.labelBackgroundColor;
+				labelCell.style.color = scope.config.labelColor;
 				for (var i = 0; i < data.Rows.length; i++) {
 					var newCell = newRow.insertCell(-1);
 					// Check if the units exists; if it does, add it to the global array
@@ -138,20 +147,31 @@
 					} 
 					newCell.innerHTML = data.Rows[i].Value + " " + dataItemUnitsArray[i];
 					// Apply padding and the specified color for this column
-					newCell.style = cellStyling;
+					newCell.style.padding = "10px";
+					newCell.style.verticalAlign = "middle";
+					newCell.style.backgroundColor = scope.config.backgroundColor;
+					newCell.style.color = scope.config.textColor;
 				}
 
 				// Add the data item timestamps
 				var newRow = symbolContainerDiv.insertRow(2);
-				newRow.style = rowStyling;
+				newRow.style.width = "100%";
+				newRow.style.border = "1px solid " + scope.config.borderColor;
+				newRow.style.fontSize = scope.config.fontSize + "px";
 				var labelCell = newRow.insertCell(-1);
 				labelCell.innerHTML = "Timestamp";
-				labelCell.style = labelStyling;
+				labelCell.style.padding = "10px";
+				labelCell.style.verticalAlign = "middle";
+				labelCell.style.backgroundColor = scope.config.labelBackgroundColor;
+				labelCell.style.color = scope.config.labelColor;
 				for (var i = 0; i < data.Rows.length; i++) {
 					var newCell = newRow.insertCell(-1);
 					newCell.innerHTML = data.Rows[i].Time;
 					// Apply padding and the specified color for this column
-					newCell.style = cellStyling;
+					newCell.style.padding = "10px";
+					newCell.style.verticalAlign = "middle";
+					newCell.style.backgroundColor = scope.config.backgroundColor;
+					newCell.style.color = scope.config.textColor;
 				}				
 			}
 		}
@@ -166,7 +186,7 @@
 		// Specify which function to call when a data update or configuration change occurs 
 		//return { dataUpdate: myCustomDataUpdateFunction, configChange:myCustomConfigurationChangeFunction };		
 	}
-	// Register this custom symbol definition with PI Coresight
+	// Register this custom symbol definition with PI Vision
 	CS.symbolCatalog.register(myCustomSymbolDefinition);
 	
-})(window.Coresight);
+})(window.PIVisualization);
