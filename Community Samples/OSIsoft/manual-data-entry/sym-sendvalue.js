@@ -204,12 +204,12 @@
 				
 		function getEnumRequest(enumUrl, index){
 			//using _.object() here to avoid IE compatibility issues
-			return _.object(['EnumConfig' + index, {'Method': 'GET', 'Resource': enumUrl}]);
+			return _.object(['EnumConfig' + index], [{'Method': 'GET', 'Resource': enumUrl}]);
 		}
 			
 		function getEnumValuesRequest(index){
 			//using _.object() here to avoid IE compatibility issues
-			return _.object(['EnumValues' + index, {
+			return _.object(['EnumValues' + index], [{
 									'Method': 'GET',
 									'Resource': '{0}',
 									'ParentIds': [
