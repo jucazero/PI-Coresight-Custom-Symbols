@@ -78,60 +78,70 @@
 		       
     </li>
 
+	
     <li class="k-item k-state-active" role="menuitem">
 		<span class="k-link k-header">
 			<span>Trace Format</span>
 			<span class="k-icon k-i-arrow-n k-panelbar-collapse"></span>
 		</span>
 		<div role="region"> 
+			<div style="width: 85%; margin: 10px 0 15px 15px;">
 			
-			<div class="config-option-format">   
-				Selected Trace:
-				<select class="trend-config-option-list" ng-init="config.selectedStream = config.Graphs[0]" ng-model="config.selectedStream" ng-options="graph.title for graph in config.Graphs" style="margin-top: 10px; background-color: white"></select>
+			<div class="trend-config-trace-list" tabindex="0" style="padding: 4px">
+                <div ng-repeat="trace in config.Graphs"
+					 ng-init="runtimeData.selectedTrace = 0"
+                     ng-click="runtimeData.selectedTrace = $index"
+                     ng-style="config.Graphs.length > 1 && runtimeData.selectedTrace === $index && { 'background-color' : '#d5d5d5' }"
+                     class="trend-config-trace-list-item"
+                     title="test">{{trace.title}}</div>
+            </div>
+			
+			
+            <div class="c-button-default-container" style="padding: 4px 4px 0 4px; margin-top: 0; margin-bottom: 0" ng-if="config.Graphs.length > 1">
+                <button type="button" class="c-primary-button trend-config-trace-arrange-button"
+                        ng-click="def.configure.deleteTrace(this.$parent)">
+                    <span class="k-icon k-delete"></span>
+                </button>
+            </div>
+
+			
+			<div class="config-option-single-row" style="margin-top: 10px;">
+				<div class="config-label"> Trace Type </div>
+				<select class=" config-option-single-row-input trend-config-option-list c-color-selector-input"  ng-model="config.Graphs[runtimeData.selectedTrace].type" ng-options="type for type in config.GraphTypes" style="margin-top: 10px;"></select>						
 			</div>
-			
-			<div class="config-option-format">   
-				
-				<div ng-repeat="graph in config.Graphs | filter: config.selectedStream">
-					<div >
-							<div >
-								Trace Type<br />
-								<select class="trend-config-option-list"  ng-model="graph.type" ng-options="type for type in config.GraphTypes" style="margin-top: 10px;"></select>						
-							</div>
-					</div>
-					<div style="margin-top: 10px;">
-						<cs-color-picker colorkeyword="Line Color:" ng-model="graph.lineColor" config="config"></cs-color-picker>
-					</div>		
+			<div style="margin-top: 10px;">
+					<cs-color-picker colorkeyword="Line Color:" ng-model="config.Graphs[runtimeData.selectedTrace].lineColor" config="config"></cs-color-picker>
+			</div>		
 					
-					<div class="config-option-single-row" style="margin: 4px 0;" ng-show="graph.type == 'column'">
-							<div class="config-option-ie11-overflow-fix">
-								<div class="config-label">Column Width:</div>
-								<input class="config-option-single-row-input" type="range" min="5" max="60" step="1" ng-model="graph.fixedColumnWidth" style="width:100px; height:100%;" title="{{graph.fixedColumnWidth}}">
-							</div>
-					</div>
-					
-					<div class="config-option-single-row" style="margin: 4px 0;">
-							<div class="config-option-ie11-overflow-fix">
-								<div class="config-label">Line Weight:</div>
-								<input class="config-option-single-row-input" type="range" min="0.7" max="4.7" step="0.5" ng-model="graph.lineThickness" style="width:100px; height:100%;" title="{{graph.lineThickness}}">
-							</div>
-					</div>
-					<div >
-							<div >
-								Marker Type<br />
-								<select class="trend-config-option-list"  ng-model="graph.bullet" ng-options="bullet for bullet in config.Bullets" style="margin-top: 10px;"></select>
-								
-							</div>
-					</div>
-					<div style="margin-top: 10px;">
-						<cs-color-picker colorkeyword="Marker Color:" ng-model="graph.bulletColor" config="config"></cs-color-picker>
-					</div>
+			<div class="config-option-single-row" style="margin: 4px 0;" ng-show="config.Graphs[runtimeData.selectedTrace].type == 'column'">
+				<div class="config-option-ie11-overflow-fix">
+					<div class="config-label">Column Width:</div>
+					<input class="config-option-single-row-input" type="range" min="5" max="60" step="1" ng-model="config.Graphs[runtimeData.selectedTrace].fixedColumnWidth" style="width:100px; height:100%;" title="{{config.Graphs[runtimeData.selectedTrace].fixedColumnWidth}}">
 				</div>
-				
 			</div>
-		    
+			
+			<div class="config-option-single-row" style="margin: 4px 0;">
+				<div class="config-option-ie11-overflow-fix">
+					<div class="config-label">Line Weight:</div>
+					<input class="config-option-single-row-input" type="range" min="0.7" max="4.7" step="0.5" ng-model="config.Graphs[runtimeData.selectedTrace].lineThickness" style="width:100px; height:100%;" title="{{config.Graphs[runtimeData.selectedTrace].lineThickness}}">
+				</div>
+			</div>
+			
+			<div class="config-option-single-row"  >
+				<div class="config-label"> Marker Type </div> 
+				<select class="config-option-single-row-input trend-config-option-list c-color-selector-input"  ng-model="config.Graphs[runtimeData.selectedTrace].bullet" ng-options="bullet for bullet in config.Bullets" style="margin-top: 10px;"></select>					
+			</div>
+			<div style="margin-top: 10px;">
+				<cs-color-picker colorkeyword="Marker Color:" ng-model="config.Graphs[runtimeData.selectedTrace].bulletColor" config="config"></cs-color-picker>
+			</div>
+					    
 		</div>
-    </li>
+   
+</div>
+
+   </li>
+	
+	
 	<li class="k-item" role="menuitem">
         <span class="k-link k-header">
 			<span>About</span>

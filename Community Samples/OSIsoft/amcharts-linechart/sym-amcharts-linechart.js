@@ -1,4 +1,3 @@
-
 /**
 # ***********************************************************************
 # * DISCLAIMER:
@@ -17,9 +16,6 @@
 #
 **/
 
-//************************************
-// Begin defining a new symbol
-//************************************
 (function (CS) {
 	//'use strict';
 	
@@ -36,6 +32,7 @@
 				DataQueryMode: CS.Extensibility.Enums.DataQueryMode.ModePlotValues,
 				Height: 300,
 				Width: 600,
+				FormatType: "F3",
 				BackgroundColor: "",
 				TextColor: "#ffffff",
 				Graphs: [],
@@ -52,16 +49,53 @@
                 mode: 'format'
             }];
         },
+		inject: ['dataPump'],
+		configure: {
+			deleteTrace: configDeleteTrace
+			
+		}
  
 	};
-	
 	
 	
 	function symbolVis() { };
     CS.deriveVisualizationFromBase(symbolVis);
 	
+	function configDeleteTrace(scope){
+		var index = scope.runtimeData.selectedTrace;
+        var datasources = scope.symbol.DataSources;
+		var graphs = scope.config.Graphs;
+		
+        if (datasources.length > 1) {
+            datasources.splice(index, 1);
+			graphs.splice(index,1);   
+			updateGraphIndexes(graphs);
+			scope.$root.$broadcast('refreshDataForChangedSymbols');		
+		}
+		
+	};
 	
-	symbolVis.prototype.init = function(scope, elem) {	
+	function updateGraphIndexes(graphs){
+		graphs.forEach(function(graph, index){
+			graph.valueField = "Value" + index;
+		});
+		
+	}
+	
+	symbolVis.prototype.init = function(scope, elem, dataPump) {	
+	
+	
+	    scope.$watch('symbol.DataSources', function (nv, ov) {
+            if (nv && ov && !angular.equals(nv, ov)) {
+/*                 that.revertZoom();
+                if (nv.length <= ov.length) {
+                    scope.$emit(scope.cursor.callouts.length ? 'refreshDataforChangedSymbolsWithCursor' : 'refreshDataForChangedSymbols');
+                    scope.trendModel.refresh();
+                } */
+            }
+        }, true);
+		
+		
 		this.onDataUpdate = dataUpdate;
 		this.onConfigChange = configChange;
 		
@@ -77,32 +111,42 @@
 			"left", "right", "top", "bottom"
 		];
 		
+		
+		
 		scope.config.DataSources = scope.symbol.DataSources;
-		scope.config.Graphs = scope.config.Graphs.length > 0 ? scope.config.Graphs : initGraphs(scope.config.DataSources);
+		
 	
 		var chart = initChart(scope.config);
-		if(chart.graphs[0].lineColor == ""){
-			scope.config.Graphs.forEach(function(graph,index){
-				graph.lineColor = chart.graphs[index].lineColorR;
-				graph.bulletColor = chart.graphs[index].lineColorR;
-			});
-				
-				
-			
-			
+
+		
+		chart.addListener("zoomed", handleZoom);
+		
+		function handleZoom(event) {
+		//   console.log(event);
+		 //  console.log(CS);
+		  // dataPump.stop();
 		}
 		
-		
 		function initChart(config){
+			
+			config.Graphs = config.Graphs.length > 0 ? config.Graphs : initGraphs(scope.symbol.DataSources);
+	
 			var symbolContainerDiv = elem.find('#container')[0];
 			symbolContainerDiv.id = "myCustomSymbol_" + Math.random().toString(36).substr(2, 16);
 								
 			var chartconfig = getChartConfig(config);
 					
-			var customVisualizationObject = AmCharts.makeChart(symbolContainerDiv.id, chartconfig);
+			var chartObject = AmCharts.makeChart(symbolContainerDiv.id, chartconfig);
 			
+			
+			//if(chartObject.graphs[0].lineColor == ""){
+				config.Graphs.forEach(function(graph,index){
+					graph.lineColor = chartObject.graphs[index].lineColorR;
+					graph.bulletColor = chartObject.graphs[index].lineColorR;
+				});	
+			//}
 		
-			return customVisualizationObject;
+			return chartObject;
 		};		
 		
 		
@@ -116,37 +160,28 @@
 						scope.config.Graphs =  scope.config.Graphs.concat(newGraphs);
 
 					}
-    
-				//console.log('newConfig',newConfig);
-				//console.log('chart',chart);
+
 				chart.graphs = getGraphs(scope.config.Graphs);
 				chart.color = scope.config.TextColor;
 				chart.rotate = scope.config.Rotate;
 				chart.categoryAxis.labelRotation =  scope.config.LabelRotation;
 				chart.legend.position = scope.config.LegendPosition;
-			//	console.log('test', chart);
+
 				
 				
 
 				chart.validateData();
-				//	console.log('config log', scope.config.BackgroundColor);
             
 			}
 			
         };
 			
 		function dataUpdate(newdata) { 
-			//console.log('newdata',newdata);
 			if (!newdata || !chart) return;
 			var dataprovider = convertToChartDataFormat(newdata);		
-			//console.log('dataprovider', dataprovider);
 			chart.dataProvider = dataprovider;
 			chart.validateData();
 			chart.animateAgain();			
-			
-			//console.log('newdata', newdata.Data[0].Values[0]);
-			
-			//console.log('provider', chart.dataProvider[0]);
 			
 		}
              
@@ -184,20 +219,18 @@
 			return datasources.map(function(item){
 				var isAttribute = /af:/.test(item);
 				var label = isAttribute ? item.match(/\w*\|.*$/)[0] : item.match(/(\w+)\?*[0-9]*$/)[1];
-				var index = scope.symbol.DataSources.indexOf(item);
-				
+				var index = scope.symbol.DataSources.indexOf(item);			
 				return {
 						balloonText: "<span style='font-size:13px'>[[title]]</span><br> <span style='font-size:18px'>[[Time]]</span><br><span style='font-size:18px'>[[Value" + index + "]]</span>",
-						/* <b> [[title]] </b><br>[[Time]] <br> [[Value"+index+@"]]" */
 						title: label,
 						valueField: "Value" + index,
 						bullet: "round",
-						lineColor: '', //'#'+Math.floor(Math.random()*16777215).toString(16),
+	//					lineColor: '', 
 						lineThickness: 1,
 						type: "line",
 						bulletColor: "rgba(0,0,0,0)",
 						fixedColumnWidth: 25
-					//	connect: false
+
 				}
 				
 			});			
@@ -215,7 +248,7 @@
 					type: graph.type,
 					bulletColor: graph.bulletColor,
 					fixedColumnWidth: parseInt(graph.fixedColumnWidth)
-			//		connect: graph.connect
+
 				};
 				
 			});
@@ -228,13 +261,10 @@
 						"theme": "dark",
 						"rotate": config.Rotate,
 						"color": config.TextColor,
-						//"plotAreaFillColors": scope.config.plotAreaFillColor,
-						//"fontFamily": "arial",
-						//"marginRight": 30,
-						//"creditsPosition": "bottom-right",
-						//"titles": createArrayOfChartTitles(),
-                        //"fontSize": 12,
-						
+						"listeners": [{
+							"event": "zoomed",
+							"method": handleZoom
+						}],
 						"valueAxes": [{
 							"position": "left",
 							"title": "Value"
@@ -245,27 +275,24 @@
 							"labelRotation": config.LabelRotation,
 							"parseDates": true,
 							"minPeriod":"ss",
-						//	"type": "date"
-
 						},
 						"graphs": getGraphs(config.Graphs),					 
 						"dataProvider": "",						
 						"chartCursor": { 
-						//	"cursorColor": "gray",
+
 							"valueLineBalloonEnabled": true,
 							"valueLineEnabled": true,
 							"valueZoomable": true
 						},
-					//	"zoomOutButtonImage": "",
 						"legend": {
 							"enabled": true,
 							"useGraphSettings": true,
 							"position": config.LegendPosition
 							
 						},
-						"chartScrollbar": {
-							"enabled": false
-						} 
+						"export": {
+							"enabled": true
+						}
 					}
         }
 
