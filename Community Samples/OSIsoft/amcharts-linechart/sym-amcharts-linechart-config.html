@@ -1,27 +1,14 @@
-<!-- <div class="c-side-pane t-toolbar">
-    <span style="color:#fff; margin-left:15px">General</span>
-</div>
+<ul kendo-panel-bar class="t-side-panel-bgcolor" style="font-size: 14px;">
+    <li class="k-state-active">
+	
+        <span class="panel-bar-label-no-wrap">General</span>
 
-<div class="c-side-pane t-toolbar">
-    <span style="color:#fff; margin-left:15px">Display Format</span>
-</div>
-
-<div class="c-side-pane t-toolbar">
-    <span style="color:#fff; margin-left:15px">Trace Format</span>
-</div> -->
-
-<ul kendo-panel-bar class="t-side-panel-bgcolor" style="font-size: 14px;" role="menu">
-    <li class="k-item k-state-active" role="menuitem">
-        <span class="k-link k-header">
-			<span>General</span>
-			<span class="k-icon k-i-arrow-n k-panelbar-collapse"></span>
-		</span>
 		<div role="region"> 
 			<div class="config-option-format">   
-				<cs-color-picker colorkeyword="Background" ng-model="config.BackgroundColor" config="config"></cs-color-picker>
+				<pv-color-picker colorkeyword="Background" ng-model="config.BackgroundColor" config="config"></pv-color-picker>
 			</div>
 			<div class="config-option-format">   
-				<cs-color-picker colorkeyword="Text" ng-model="config.TextColor" config="config"></cs-color-picker>
+				<pv-color-picker colorkeyword="Text" ng-model="config.TextColor" config="config"></pv-color-picker>
 			</div>		
 			
 			<div class="config-option-format">   
@@ -40,11 +27,10 @@
 		
     </li>
 
-    <li class="k-item k-state-active" role="menuitem">
-        <span class="k-link k-header">
-			<span>Display Format</span>
-			<span class="k-icon k-i-arrow-n k-panelbar-collapse"></span>
-		</span>
+     <li class="k-state-active">
+	 
+        <span class="panel-bar-label-no-wrap">Display Format</span>
+
 		<div role="region">
 	
 			<div class="config-option-format">   
@@ -79,11 +65,9 @@
     </li>
 
 	
-    <li class="k-item k-state-active" role="menuitem">
-		<span class="k-link k-header">
-			<span>Trace Format</span>
-			<span class="k-icon k-i-arrow-n k-panelbar-collapse"></span>
-		</span>
+    <li class="k-state-active">
+	       <span class="panel-bar-label-no-wrap">Trace Format</span>
+		
 		<div role="region"> 
 			<div style="width: 85%; margin: 10px 0 15px 15px;">
 			
@@ -110,7 +94,7 @@
 				<select class=" config-option-single-row-input trend-config-option-list c-color-selector-input"  ng-model="config.Graphs[runtimeData.selectedTrace].type" ng-options="type for type in config.GraphTypes" style="margin-top: 10px;"></select>						
 			</div>
 			<div style="margin-top: 10px;">
-					<cs-color-picker colorkeyword="Line Color:" ng-model="config.Graphs[runtimeData.selectedTrace].lineColor" config="config"></cs-color-picker>
+					<pv-color-picker colorkeyword="Line Color:" ng-model="config.Graphs[runtimeData.selectedTrace].lineColor" config="config"></pv-color-picker>
 			</div>		
 					
 			<div class="config-option-single-row" style="margin: 4px 0;" ng-show="config.Graphs[runtimeData.selectedTrace].type == 'column'">
@@ -132,21 +116,19 @@
 				<select class="config-option-single-row-input trend-config-option-list c-color-selector-input"  ng-model="config.Graphs[runtimeData.selectedTrace].bullet" ng-options="bullet for bullet in config.Bullets" style="margin-top: 10px;"></select>					
 			</div>
 			<div style="margin-top: 10px;">
-				<cs-color-picker colorkeyword="Marker Color:" ng-model="config.Graphs[runtimeData.selectedTrace].bulletColor" config="config"></cs-color-picker>
+				<pv-color-picker colorkeyword="Marker Color:" ng-model="config.Graphs[runtimeData.selectedTrace].bulletColor" config="config"></pv-color-picker>
 			</div>
 					    
 		</div>
    
-</div>
+    </div>
 
    </li>
 	
 	
-	<li class="k-item" role="menuitem">
-        <span class="k-link k-header">
-			<span>About</span>
-			<span class="k-icon k-i-arrow-n k-panelbar-collapse"></span>
-		</span>
+	 <li class="k-state-active">
+       <span class="panel-bar-label-no-wrap">About</span>    
+    
 		<div role="region"> 
 			<div class="config-option-format">   
 				This is an example of custom symbol made with the PI Vision Extensibility Framework.
@@ -168,3 +150,5 @@
 		
     </li>
 </ul>
+
+

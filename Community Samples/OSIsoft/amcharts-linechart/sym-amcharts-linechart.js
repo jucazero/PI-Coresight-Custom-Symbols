@@ -16,20 +16,20 @@
 #
 **/
 
-(function (CS) {
+(function (PV) {
 	//'use strict';
 	
 	var myCustomSymbolDefinition = {
 
 		typeName: 'amcharts-linechart',
 		displayName: 'amCharts Line Chart',
-		datasourceBehavior: CS.Extensibility.Enums.DatasourceBehaviors.Multiple,
+		datasourceBehavior: PV.Extensibility.Enums.DatasourceBehaviors.Multiple,
 		iconUrl: 'Scripts/app/editor/symbols/ext/Icons/LineChart.png',
 		visObjectType: symbolVis,
 		getDefaultConfig: function () {
 			return {
 				DataShape: 'TimeSeries',
-				DataQueryMode: CS.Extensibility.Enums.DataQueryMode.ModePlotValues,
+				DataQueryMode: PV.Extensibility.Enums.DataQueryMode.ModePlotValues,
 				Height: 300,
 				Width: 600,
 				FormatType: "F3",
@@ -59,7 +59,7 @@
 	
 	
 	function symbolVis() { };
-    CS.deriveVisualizationFromBase(symbolVis);
+    PV.deriveVisualizationFromBase(symbolVis);
 	
 	function configDeleteTrace(scope){
 		var index = scope.runtimeData.selectedTrace;
@@ -123,7 +123,7 @@
 		
 		function handleZoom(event) {
 		//   console.log(event);
-		 //  console.log(CS);
+		 //  console.log(PV);
 		  // dataPump.stop();
 		}
 		
@@ -297,6 +297,6 @@
         }
 
 	}
-	CS.symbolCatalog.register(myCustomSymbolDefinition);
+	PV.symbolCatalog.register(myCustomSymbolDefinition);
 
-})(window.Coresight);
+})(window.PIVisualization);
