@@ -22,8 +22,7 @@ If this folder doesn't exist, create it.
 
 
 ## Quick Demo Video
-
-(This is a video of the slightly older version of the symbol with different styling. Core functionality didn't change.) 
+ 
 <a href="https://www.youtube.com/edit?o=U&video_id=1qlNqmzsIOY
 " target="_blank"><img src="http://img.youtube.com/vi/1qlNqmzsIOY/2.jpg" 
 alt="Close Current Tab symbol for PI Vision" width="500" height="300" border="10" /></a>
