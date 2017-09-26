@@ -18,7 +18,6 @@ If this folder doesn't exist, create it.
 
 ## Quick Demo Video
 
-(This is a video of the slightly older version of the symbol with different styling. Core functionality didn't change.) 
 <a href="https://youtu.be/sFOaqNx3r9c" target="_blank"><img src="http://img.youtube.com/vi/sFOaqNx3r9c/0.jpg" 
 alt="Event Creation Pane for PI Vision" width="500" height="300" border="10" /></a>
 
