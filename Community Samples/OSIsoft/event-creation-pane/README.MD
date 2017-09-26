@@ -18,6 +18,6 @@ If this folder doesn't exist, create it.
 
 ## Quick Demo Video
 
-<a href="https://youtu.be/sFOaqNx3r9c" target="_blank"><img src="http://img.youtube.com/vi/sFOaqNx3r9c/0.jpg" 
+<a href="https://www.youtube.com/watch?v=sFOaqNx3r9c&index=4&list=PLJe9XAUzQ9yxChUaXRQEU3AMhSZOynRQj" target="_blank"><img src="http://img.youtube.com/vi/sFOaqNx3r9c/0.jpg" 
 alt="Event Creation Pane for PI Vision" width="500" height="300" border="10" /></a>
 
