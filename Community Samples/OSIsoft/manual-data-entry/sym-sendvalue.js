@@ -32,7 +32,11 @@
 	            mode: 'format'
 	        }];
 	    },
-        inject: ['$http', '$q']
+        inject: ['$http', '$q'],
+		configure: {
+			deleteTrace: configDeleteTrace
+			
+		}
 	};
     
     
@@ -58,7 +62,7 @@
 			DateTime: "String"
 			
 		};
-		scope.streamList = [];
+		scope.runtimeData.streamList = [];
 		scope.isAllSelected = false;
 		scope.isBtnEnabled = false;
 		scope.config.DataSources = scope.symbol.DataSources;
@@ -81,12 +85,12 @@
 						
 						if (newConfig.DataSources.length == oldConfig.DataSources.length){
 							//	switch in asset context
-							scope.streamList = newstreams;
+							scope.runtimeData.streamList = newstreams;
 							
 						}
 						else{
 							// drag & drop of a new stream
-							scope.streamList = scope.streamList.concat(newstreams);	
+							scope.runtimeData.streamList = scope.runtimeData.streamList.concat(newstreams);	
 							scope.config.streamFriendlyNames = scope.config.streamFriendlyNames.concat(newNames);
 						}
 						
@@ -97,8 +101,8 @@
         }
 		
 		getStreams(scope.symbol.DataSources).then(function(streams){
-			scope.streamList = streams;
-			scope.config.streamFriendlyNames =  scope.config.streamFriendlyNames.length > 0 ? scope.config.streamFriendlyNames : getFriendlyNameList(scope.streamList);
+			scope.runtimeData.streamList = streams;
+			scope.config.streamFriendlyNames =  scope.config.streamFriendlyNames.length > 0 ? scope.config.streamFriendlyNames : getFriendlyNameList(scope.runtimeData.streamList);
 			
 		});
 		
@@ -107,8 +111,8 @@
 		function dataUpdate(data){
 			if(!data ) return;
 			units = data.Rows[0].Label ? _.pluck(data.Rows, 'Units') : units;
-			if(!scope.streamList)return;
-			scope.streamList.forEach(function(stream, index){
+			if(!scope.runtimeData.streamList)return;
+			scope.runtimeData.streamList.forEach(function(stream, index){
 				stream.UOM = units[index];
 				stream.CurrentValue = data.Rows[index].Value;
 			})
@@ -243,7 +247,7 @@
 		   
 		scope.loading = true; //show button loading icon
 		scope.isBtnEnabled = false;   
-		   var streams = scope.streamList;
+		   var streams = scope.runtimeData.streamList;
            if(!anyStreamsSelected(streams)) return;
                
 			var batchRequest = formBulkSendRequest(streams);
@@ -296,17 +300,17 @@
 	   
 		scope.toggleAll = function(){			
 			var toggleValue = scope.isAllSelected;
-			scope.streamList.forEach(function(stream){stream.IsSelected = toggleValue});
+			scope.runtimeData.streamList.forEach(function(stream){stream.IsSelected = toggleValue});
 			scope.isBtnEnabled  = anyStreamsSelected();
 		};
 		
 		scope.toggleStreamSelection = function(){
-			scope.isAllSelected = scope.streamList.every(function(stream){return(stream.IsSelected)});
+			scope.isAllSelected = scope.runtimeData.streamList.every(function(stream){return(stream.IsSelected)});
 			scope.isBtnEnabled  = anyStreamsSelected();
 		};
 		
 	    function anyStreamsSelected(){
-			return scope.streamList.some(function(stream){return(stream.IsSelected)});
+			return scope.runtimeData.streamList.some(function(stream){return(stream.IsSelected)});
 		};
 		
 		
@@ -341,6 +345,18 @@
 	}	
 	
 	
+	function configDeleteTrace(scope){
+		var index = scope.runtimeData.selectedStream;
+        var datasources = scope.symbol.DataSources;
+		var streams = scope.runtimeData.streamList;
+		
+        if (datasources.length > 1) {
+            datasources.splice(index, 1);	
+			streams.splice(index,1);   
+			scope.$root.$broadcast('refreshDataForChangedSymbols');		
+		}
+		
+	};
 
 
     PV.symbolCatalog.register(definition);

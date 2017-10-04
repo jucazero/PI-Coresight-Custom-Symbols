@@ -7,11 +7,11 @@
 			 <th ng-show="config.showTimestamp"><b>Timestamp</b></th>
 			 <th><b>Enter Value</b></th>
 			 <th ng-show="config.showCurrentValue"><b>Current Value</b></th>
-			 <th><b>Select All  </b><input type="checkbox" style="vertical-align: middle;" ng-model="isAllSelected" ng-change="toggleAll(streamList)"/></th>
+			 <th><b>Select All  </b><input type="checkbox" style="vertical-align: middle;" ng-model="isAllSelected" ng-change="toggleAll(runtimeData.streamList)"/></th>
 		  </tr>
 		</thead>
 		<tbody ng-style="{'color':config.TextColor}">
-			<tr ng-repeat="stream in streamList" >
+			<tr ng-repeat="stream in runtimeData.streamList" >
 				<td ng-show="config.showFriendlyAttName" style="text-align: left; vertical-align: middle;"><input type="text" ng-style="{'color':config.TextColor}" style="background-color:transparent; border-color:transparent" ng-model="config.streamFriendlyNames[$index]"/></td>
 				<td ng-show="config.showAttribute" style="text-align: left; vertical-align: middle;">{{stream.Label}}</td>
 				<td style="vertical-align: middle;" ng-show="config.showTimestamp" ><input type="text" ng-model="stream.Timestamp"/></td>
