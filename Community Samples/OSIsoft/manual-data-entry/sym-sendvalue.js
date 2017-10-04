@@ -1,9 +1,9 @@
-(function (CS) {
+(function (PV) {
 	'use strict';
 	var definition = {
 	    typeName: 'sendvalue',
 		displayName: 'Manual Data Entry',
-	    datasourceBehavior:  CS.Extensibility.Enums.DatasourceBehaviors.Multiple,
+	    datasourceBehavior:  PV.Extensibility.Enums.DatasourceBehaviors.Multiple,
 		visObjectType: symbolVis,
         iconUrl: '/Scripts/app/editor/symbols/ext/Icons/paper-plane-xxl.png',
 	    getDefaultConfig: function() {			
@@ -37,9 +37,9 @@
     
     
 	function symbolVis() { }
-	CS.deriveVisualizationFromBase(symbolVis);
+	PV.deriveVisualizationFromBase(symbolVis);
 		
-	var baseUrl = CS.ClientSettings.PIWebAPIUrl.replace(/\/?$/, '/'); //Example: "https://server.domain.com/piwebapi/";
+	var baseUrl = PV.ClientSettings.PIWebAPIUrl.replace(/\/?$/, '/'); //Example: "https://server.domain.com/piwebapi/";
 		
 	symbolVis.prototype.init = function (scope, elem, $http, $q){
 			
@@ -343,5 +343,5 @@
 	
 
 
-    CS.symbolCatalog.register(definition);
-})(window.Coresight);
+    PV.symbolCatalog.register(definition);
+})(window.PIVisualization);
