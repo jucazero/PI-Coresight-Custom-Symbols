@@ -30,6 +30,8 @@
 			return {
 				DataShape: 'TimeSeries',
 				DataQueryMode: PV.Extensibility.Enums.DataQueryMode.ModePlotValues,
+				DataType: true,
+				//Description: true,
 				Height: 300,
 				Width: 600,
 				FormatType: "F3",
@@ -149,6 +151,7 @@
 			return chartObject;
 		};		
 		
+		dataTypes = [];
 		
 		function configChange(newConfig, oldConfig) {
 			
@@ -178,21 +181,32 @@
 			
 		function dataUpdate(newdata) { 
 			if (!newdata || !chart) return;
+
+			if (newdata.Data[0].DataType) {
+				dataTypes = newdata.Data.map(function(item){
+					return { type: item.DataType };
+				});
+			}
+			
+			
 			var dataprovider = convertToChartDataFormat(newdata);		
 			chart.dataProvider = dataprovider;
+
 			chart.validateData();
 			chart.animateAgain();			
+
 			
 		}
              
-		 function convertToChartDataFormat(newdata) {		
+		function convertToChartDataFormat(newdata) {		
 			return _.chain(newdata.Data)
 					.map(function(dataArray,index){
 						return dataArray.Values.map(function(dataitem){
 								var datetime = new Date(dataitem.Time);
 								var starttime = new Date(dataArray.StartTime);
+								var value = dataTypes[index].type.toLowerCase() == 'bool' ? boolStringToInt(dataitem.Value) : dataitem.Value;
 								return datetime >= starttime 
-										? _.object(['Value' + index, 'Time', 'DateTime'], [dataitem.Value, dataitem.Time, datetime])
+										? _.object(['Value' + index, 'Time', 'DateTime'], [value, dataitem.Time, datetime])
 										: undefined;
 							});
 					})
@@ -254,6 +268,10 @@
 			});
 			
 		};
+		
+		function boolStringToInt(val) {
+			return ((val + '').toLowerCase() === 'true')*1;
+		}
 		
 		function getChartConfig(config) {
             return {
