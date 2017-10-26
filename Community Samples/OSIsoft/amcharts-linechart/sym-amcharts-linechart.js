@@ -89,27 +89,26 @@
 			return _.chain(newdata.Data)
 					.map(function(dataArray, index){
 
-						var dataitemType = metadata[index].DataType.toLowerCase();
 						var starttime = new Date(dataArray.StartTime);
 						var endtime = new Date(dataArray.EndTime);
 						var lastitem = {
-										Value: ParseValue(dataitemType, dataArray.Values[dataArray.Values.length - 1].Value, metadata[index]),
+										Value: ParseValue(dataArray.Values[dataArray.Values.length - 1].Value, metadata[index]),
 										Time: dataArray.Values[dataArray.Values.length - 1].Time,
 										DateTime: endtime
 									}
-						var lastvalue = _.object(['Value' + index, 'Time', 'DateTime'], [lastitem.Value, lastitem.Time, lastitem.DateTime]);
+						var lastvalue = _.object(['Value' + index, 'ValueString' + index, 'Time', 'DateTime'], [lastitem.Value.Value, lastitem.Value.Name, lastitem.Time, lastitem.DateTime]);
 						
 						var parsedValues = dataArray.Values
 								.map(function(dataitem){
 									var datetime = new Date(dataitem.Time);						
-									var value = ParseValue(dataitemType, dataitem.Value, metadata[index]);
+									var value = ParseValue(dataitem.Value, metadata[index]);
 									
 									if(dataArray.Values.length == 1) {
 										return [
-											_.object(['Value' + index, 'Time', 'DateTime'], [value, dataitem.Time, starttime]), 
+											_.object(['Value' + index, 'ValueString' + index, 'Time', 'DateTime'], [value.Value, value.Name, dataitem.Time, starttime]), 
 										]
 									}
-									return _.object(['Value' + index, 'Time', 'DateTime'], [value, dataitem.Time, datetime]);
+									return _.object(['Value' + index, 'ValueString' + index, 'Time', 'DateTime'], [value.Value, value.Name, dataitem.Time, datetime]);
 									/* datetime >= starttime 
 											? _.object(['Value' + index, 'Time', 'DateTime'], [value, dataitem.Time, datetime])
 											: undefined; */
@@ -135,14 +134,14 @@
 					.value();			
 		 }
 
-		 function ParseValue(type, value, metadata) {
-			return (type == 'bool' || type == 'digital')  
+		 function ParseValue(value, metadata) {
+			return isDigital(metadata)  
 			? StateToValue(value, metadata.States) 
-			: parseFloat(value)
+			: {Value: parseFloat(value), Name: value}
 
 		 }
 		 function StateToValue(value, states) {
-			return (_.findWhere(states, {Name: value})).Value;
+			return (_.findWhere(states, {Name: value}));
 		 }
 
 		//
@@ -246,7 +245,7 @@
 					title: PV.Utils.parsePath(item.Path).label,
 					bullet: "round", 
 					lineThickness: 1,
-					type: "line",
+					type: isDigital(item) ? "step" : "line",
 					bulletColor: "rgba(0,0,0,0)",
 					fixedColumnWidth: 25,
 					pointPosition: 'start'
@@ -258,7 +257,7 @@
 			graphs.forEach(function(graph, index){
 				graph.valueField = "Value" + index;
 				graph.valueAxis = "ValueAxis" + index;
-				graph.balloonText = "<span style='font-size:13px'>[[title]]</span><br> <span style='font-size:18px'>[[Time]]</span><br><span style='font-size:18px'>[[Value" + index + "]]</span>";
+				graph.balloonText = "<span style='font-size:13px'>[[title]]</span><br> <span style='font-size:13px'>[[Time]]</span><br><span style='font-size:13px'>[[ValueString" + index + "]]</span>";
 				graph.lineColor = graph.lineColor || TRACECOLORS[index - ~~(index / TRACECOLORS.length) * TRACECOLORS.length];
 			});
 			
@@ -266,41 +265,44 @@
 
 		function getAxes(metadata){
 			return metadata.map(function(item){
-				var type = item.DataType.toLowerCase();
 				return {
 					minimum: item.Minimum,
-					maximum: (type == 'bool' || type == 'digital') ? item.Maximum + 2 : item.Maximum,
+					maximum: isDigital(item) ? item.Maximum + 2 : item.Maximum,
 					//inside: true
 				}
 			});
 		}
 
-		function convertToLabel(value, valueString, axis) {
-			 
-			var index = axis.id.slice("ValueAxis".length);
-			var states = scope.runtimeData.MetaData[index].States;
-
-			var stateValue = _.findWhere(states, {Value: value});
-
-			if(stateValue != undefined) {
-				return stateValue.Name;
-			}  
-			return "";
-		}
-
-		function updateAxesIndexes(axes, metadata){
+		function updateAxesIndexes(axes, metadata) {
 			axes.forEach(function(item, index){
-				var type = metadata[index].DataType.toLowerCase();
 				item.id = "ValueAxis" + index;
 				item.offset = (-45 * index);
 				item.color = item.color || TRACECOLORS[index - ~~(index / TRACECOLORS.length) * TRACECOLORS.length];
 				item.maximum = metadata[index].Maximum;
 				item.minimum = metadata[index].Minimum;
-				item.labelFunction =  (type == 'bool' || type == 'digital') ? convertToLabel : ""
+				item.labelFunction = isDigital(metadata[index]) ? convertToLabel : ""
 			});
 		}
 
-		function initChart(){
+		function convertToLabel(value, valueString, axis) {
+			
+		   var index = axis.id.slice("ValueAxis".length);
+		   var states = scope.runtimeData.MetaData[index].States;
+
+		   var stateValue = _.findWhere(states, {Value: value});
+
+		   if(stateValue != undefined) {
+			   return stateValue.Name;
+		   }  
+		   return "";
+	   }
+
+	   function isDigital(metadata) {
+			var type = metadata.DataType.toLowerCase();
+			return (type == 'bool' || type == 'digital')
+	   }
+
+		function initChart() {
 			// Get the <div> element id attribute and make it random
 			var symbolContainerDiv = elem.find('#container')[0];
 			symbolContainerDiv.id = "amchartsLineChart_" + Math.random().toString(36).substr(2, 16);
