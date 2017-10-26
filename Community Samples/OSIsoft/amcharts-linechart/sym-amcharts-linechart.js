@@ -17,10 +17,9 @@
 **/
 
 (function (PV) {
-	//'use strict';
+	'use strict';
 	
-	var myCustomSymbolDefinition = {
-
+	var definition = {
 		typeName: 'amcharts-linechart',
 		displayName: 'amCharts Line Chart',
 		datasourceBehavior: PV.Extensibility.Enums.DatasourceBehaviors.Multiple,
@@ -28,191 +27,100 @@
 		visObjectType: symbolVis,
 		getDefaultConfig: function () {
 			return {
-				DataShape: 'TimeSeries',
+				DataShape: 'Timeseries',
 				DataQueryMode: PV.Extensibility.Enums.DataQueryMode.ModePlotValues,
 				DataType: true,
-				//Description: true,
 				Height: 300,
 				Width: 600,
 				FormatType: "F3",
 				BackgroundColor: "",
 				TextColor: "#ffffff",
 				Graphs: [],
+				ValueAxes: [],
 				Rotate: false,
 				LabelRotation: 0,
 				LegendPosition: "right"
 				
             };
-		},
-	
+		},	
         configOptions: function () {
             return [{
 				title: 'Format Symbol',
-                mode: 'format'
+                mode: 'default'
             }];
         },
-		inject: ['dataPump'],
-		configure: {
-			deleteTrace: configDeleteTrace
-			
-		}
+		inject: ['dataPump', 'webServices']
+
  
 	};
-	
 	
 	function symbolVis() { };
     PV.deriveVisualizationFromBase(symbolVis);
 	
-	function configDeleteTrace(scope){
-		var index = scope.runtimeData.selectedTrace;
-        var datasources = scope.symbol.DataSources;
-		var graphs = scope.config.Graphs;
-		
-        if (datasources.length > 1) {
-            datasources.splice(index, 1);
-			graphs.splice(index,1);   
-			updateGraphIndexes(graphs);
-			scope.$root.$broadcast('refreshDataForChangedSymbols');		
-		}
-		
-	};
+
+	symbolVis.prototype.init = function(scope, elem, dataPump, webServices) {	
 	
-	function updateGraphIndexes(graphs){
-		graphs.forEach(function(graph, index){
-			graph.valueField = "Value" + index;
-		});
-		
-	}
-	
-	symbolVis.prototype.init = function(scope, elem, dataPump) {	
-	
-	
-	    scope.$watch('symbol.DataSources', function (nv, ov) {
-            if (nv && ov && !angular.equals(nv, ov)) {
-/*                 that.revertZoom();
-                if (nv.length <= ov.length) {
-                    scope.$emit(scope.cursor.callouts.length ? 'refreshDataforChangedSymbolsWithCursor' : 'refreshDataForChangedSymbols');
-                    scope.trendModel.refresh();
-                } */
-            }
-        }, true);
-		
-		
 		this.onDataUpdate = dataUpdate;
 		this.onConfigChange = configChange;
-		
-		scope.config.Bullets = [
-			"none","round","square", "triangleUp", "triangleDown", "bubble"//, "custom"
-		];
-		
-		scope.config.GraphTypes = [
-			"line", "column", "step", "smoothedLine"
-		];
-		
-		scope.config.Positions = [
-			"left", "right", "top", "bottom"
-		];
-		
-		
-		
-		scope.config.DataSources = scope.symbol.DataSources;
-		
-	
-		var chart = initChart(scope.config);
+		scope.webServices = webServices;
+		var chart;
+		scope.runtimeData.MetaData = [];
+		scope.runtimeData.deleteTrace = deleteChartDataSources;
 
-		
-		chart.addListener("zoomed", handleZoom);
-		
-		function handleZoom(event) {
-		//   console.log(event);
-		 //  console.log(PV);
-		  // dataPump.stop();
-		}
-		
-		function initChart(config){
-			
-			config.Graphs = config.Graphs.length > 0 ? config.Graphs : initGraphs(scope.symbol.DataSources);
-	
-			var symbolContainerDiv = elem.find('#container')[0];
-			symbolContainerDiv.id = "myCustomSymbol_" + Math.random().toString(36).substr(2, 16);
-								
-			var chartconfig = getChartConfig(config);
-					
-			var chartObject = AmCharts.makeChart(symbolContainerDiv.id, chartconfig);
-			
-			
-			//if(chartObject.graphs[0].lineColor == ""){
-				config.Graphs.forEach(function(graph,index){
-					graph.lineColor = chartObject.graphs[index].lineColorR;
-					graph.bulletColor = chartObject.graphs[index].lineColorR;
-				});	
-			//}
-		
-			return chartObject;
-		};		
-		
-		dataTypes = [];
-		
-		function configChange(newConfig, oldConfig) {
-			
-            if (chart && newConfig && oldConfig && !angular.equals(newConfig, oldConfig)) {			
-				var newdatasoucres = _.difference(newConfig.DataSources, oldConfig.DataSources);
-					if(newdatasoucres.length > 0){
-						var newGraphs = initGraphs(newdatasoucres);
-						var index = scope.config.Graphs.length;
-						scope.config.Graphs =  scope.config.Graphs.concat(newGraphs);
+		addDataSourcesToChart(scope.symbol.DataSources, scope.config.Graphs);
 
-					}
-
-				chart.graphs = getGraphs(scope.config.Graphs);
-				chart.color = scope.config.TextColor;
-				chart.rotate = scope.config.Rotate;
-				chart.categoryAxis.labelRotation =  scope.config.LabelRotation;
-				chart.legend.position = scope.config.LegendPosition;
-
-				
-				
-
-				chart.validateData();
-            
-			}
-			
-        };
-			
+		//
+		// Chart data helper functions
+		//
 		function dataUpdate(newdata) { 
 			if (!newdata || !chart) return;
 
-			if (newdata.Data[0].DataType) {
-				dataTypes = newdata.Data.map(function(item){
-					return { type: item.DataType };
-				});
-			}
-			
-			
 			var dataprovider = convertToChartDataFormat(newdata);		
 			chart.dataProvider = dataprovider;
+			
 
 			chart.validateData();
-			chart.animateAgain();			
-
-			
+			chart.animateAgain();
 		}
-             
-		function convertToChartDataFormat(newdata) {		
+
+
+		function convertToChartDataFormat(newdata) {
+			var metadata = scope.runtimeData.MetaData;		
 			return _.chain(newdata.Data)
-					.map(function(dataArray,index){
-						return dataArray.Values.map(function(dataitem){
-								var datetime = new Date(dataitem.Time);
-								var starttime = new Date(dataArray.StartTime);
-								var value = dataTypes[index].type.toLowerCase() == 'bool' ? boolStringToInt(dataitem.Value) : dataitem.Value;
-								return datetime >= starttime 
-										? _.object(['Value' + index, 'Time', 'DateTime'], [value, dataitem.Time, datetime])
-										: undefined;
-							});
+					.map(function(dataArray, index){
+
+						var dataitemType = metadata[index].DataType.toLowerCase();
+						var starttime = new Date(dataArray.StartTime);
+						var endtime = new Date(dataArray.EndTime);
+						var lastitem = {
+										Value: ParseValue(dataitemType, dataArray.Values[dataArray.Values.length - 1].Value, metadata[index]),
+										Time: dataArray.Values[dataArray.Values.length - 1].Time,
+										DateTime: endtime
+									}
+						var lastvalue = _.object(['Value' + index, 'Time', 'DateTime'], [lastitem.Value, lastitem.Time, lastitem.DateTime]);
+						
+						var parsedValues = dataArray.Values
+								.map(function(dataitem){
+									var datetime = new Date(dataitem.Time);						
+									var value = ParseValue(dataitemType, dataitem.Value, metadata[index]);
+									
+									if(dataArray.Values.length == 1) {
+										return [
+											_.object(['Value' + index, 'Time', 'DateTime'], [value, dataitem.Time, starttime]), 
+										]
+									}
+									return _.object(['Value' + index, 'Time', 'DateTime'], [value, dataitem.Time, datetime]);
+									/* datetime >= starttime 
+											? _.object(['Value' + index, 'Time', 'DateTime'], [value, dataitem.Time, datetime])
+											: undefined; */
+								});
+						
+						parsedValues.push(lastvalue);
+						return parsedValues;
 					})
 					.flatten()
 					.compact()
-					.groupBy(function(item){return item.Time})
+					.groupBy(function(item){return item.DateTime})
 					.map(function(item){
 						if (_.size(item) > 1){
 							var merged = {};
@@ -226,95 +134,219 @@
 					.sortBy('DateTime')
 					.value();			
 		 }
-		
 
-		
-		function initGraphs(datasources){
-			return datasources.map(function(item){
-				var isAttribute = /af:/.test(item);
-				var label = isAttribute ? item.match(/\w*\|.*$/)[0] : item.match(/(\w+)\?*[0-9]*$/)[1];
-				var index = scope.symbol.DataSources.indexOf(item);			
-				return {
-						balloonText: "<span style='font-size:13px'>[[title]]</span><br> <span style='font-size:18px'>[[Time]]</span><br><span style='font-size:18px'>[[Value" + index + "]]</span>",
-						title: label,
-						valueField: "Value" + index,
-						bullet: "round",
-	//					lineColor: '', 
-						lineThickness: 1,
-						type: "line",
-						bulletColor: "rgba(0,0,0,0)",
-						fixedColumnWidth: 25
+		 function ParseValue(type, value, metadata) {
+			return (type == 'bool' || type == 'digital')  
+			? StateToValue(value, metadata.States) 
+			: parseFloat(value)
 
+		 }
+		 function StateToValue(value, states) {
+			return (_.findWhere(states, {Name: value})).Value;
+		 }
+
+		//
+		// Chart configuration helper functions 
+        //
+		scope.runtimeData.Bullets = [
+			"none","round","square", "triangleUp", "triangleDown", "bubble"//, "custom"
+		];
+		
+		scope.runtimeData.GraphTypes = [
+			"line", "column", "step", "smoothedLine"
+		];
+		
+		scope.runtimeData.Positions = [
+			"left", "right", "top", "bottom"
+		];
+
+		var TRACECOLORS = ["rgb(62, 152, 211)", "rgb(224, 138, 0)", "rgb(178, 107, 255)", "rgb(47, 188, 184)", "rgb(219, 70, 70)", "rgb(156, 128, 110)", "rgb(60, 191, 60)", "rgb(197, 86, 13)","rgb(46, 32, 238)","rgb(165, 32, 86)" ];
+ 
+		// The watch is destroyed when scope is destroyed
+	    scope.$watch('symbol.DataSources', function (nv, ov) {		
+			if (nv && ov && !angular.equals(nv, ov)) {
+				if(nv.length > ov.length) {
+					var newdatasoucres = _.difference(nv, ov);
+					addDataSourcesToChart(newdatasoucres, []);
 				}
+            }
+		}, true);
+		
+		function configChange(newConfig, oldConfig) {
+			if (chart && newConfig && oldConfig && !angular.equals(newConfig, oldConfig)) {	
 				
-			});			
-		};
-        
-		function getGraphs(graphs){
-			return graphs.map(function(graph){
-				return {
-					balloonText: graph.balloonText,
-					title: graph.title,
-					valueField: graph.valueField,
-					bullet: graph.bullet,
-					lineColor: graph.lineColor,
-					lineThickness: graph.lineThickness,
-					type: graph.type,
-					bulletColor: graph.bulletColor,
-					fixedColumnWidth: parseInt(graph.fixedColumnWidth)
+				chart.graphs = angular.copy(scope.config.Graphs);
+				chart.valueAxes = angular.copy(scope.config.ValueAxes);
+				chart.color = scope.config.TextColor;
+				chart.rotate = scope.config.Rotate;
+				chart.categoryAxis.labelRotation =  scope.config.LabelRotation;
+				chart.legend.position = scope.config.LegendPosition;			
 
-				};
+				chart.validateData();
+			}
+		}
+
+		function addDataSourcesToChart(datasources, graphs) {
+			// Get metadata: minimum, maximum for scales as well as states for plotting digital or enumeration types
+			return getMetaData(datasources).then(function(metadata){
 				
+				scope.runtimeData.MetaData = scope.runtimeData.MetaData.concat(metadata.data);	
+
+				if (graphs.length == 0) {
+					var newGraphs = getGraphs(metadata.data);
+					scope.config.Graphs = scope.config.Graphs.concat(newGraphs);
+
+					var newAxes = getAxes(metadata.data);
+					scope.config.ValueAxes = scope.config.ValueAxes.concat(newAxes);
+				}
+				updateGraphIndexes(scope.config.Graphs);
+				updateAxesIndexes(scope.config.ValueAxes, scope.runtimeData.MetaData);
+			
+			}).then(function() {
+				// Create chart if it doesn't exist
+				if(!chart) {
+					chart = initChart();
+				} 
+				// Update the chart's scales and graphs
+				// Using map here because splice empties the original Graph and Axes arrays
+				chart.graphs = angular.copy(scope.config.Graphs);
+				chart.valueAxes = angular.copy(scope.config.ValueAxes);
+				chart.validateData();
+			});
+
+		}
+
+		function deleteChartDataSources(scope) {
+			var index = scope.runtimeData.selectedTrace;
+			var datasources = scope.symbol.DataSources;
+			var graphs = scope.config.Graphs;
+			var axes = scope.config.ValueAxes;
+			var metadata = scope.runtimeData.MetaData;
+			
+			if (datasources.length > 1) {
+				datasources.splice(index, 1);
+				graphs.splice(index, 1);   
+				axes.splice(index, 1);
+				metadata.splice(index, 1);
+				updateGraphIndexes(graphs);
+				updateAxesIndexes(axes, metadata);
+				
+				scope.$root.$broadcast('refreshDataForChangedSymbols');		
+			}
+		}
+
+		function getMetaData(sources) {
+			var endpoint = scope.runtimeData.def.configRetrieveAttributeMetaData ? 'postForAttributeMetadata' : 'postForDatasourceMetadata';
+			return scope.webServices[endpoint](sources).promise;
+		} // Gets States for digital tags or attributes of enumeration type
+
+		function getGraphs(metadata){
+			return metadata.map(function(item, index){
+				return {
+					title: PV.Utils.parsePath(item.Path).label,
+					bullet: "round", 
+					lineThickness: 1,
+					type: "line",
+					bulletColor: "rgba(0,0,0,0)",
+					fixedColumnWidth: 25,
+					pointPosition: 'start'
+				};
+			});
+		}
+
+		function updateGraphIndexes(graphs){
+			graphs.forEach(function(graph, index){
+				graph.valueField = "Value" + index;
+				graph.valueAxis = "ValueAxis" + index;
+				graph.balloonText = "<span style='font-size:13px'>[[title]]</span><br> <span style='font-size:18px'>[[Time]]</span><br><span style='font-size:18px'>[[Value" + index + "]]</span>";
+				graph.lineColor = graph.lineColor || TRACECOLORS[index - ~~(index / TRACECOLORS.length) * TRACECOLORS.length];
 			});
 			
-		};
-		
-		function boolStringToInt(val) {
-			return ((val + '').toLowerCase() === 'true')*1;
 		}
-		
-		function getChartConfig(config) {
-            return {
-						"type": "serial",
-						"theme": "dark",
-						"rotate": config.Rotate,
-						"color": config.TextColor,
-						"listeners": [{
-							"event": "zoomed",
-							"method": handleZoom
-						}],
-						"valueAxes": [{
-							"position": "left",
-							"title": "Value"
-						}],    
-						"categoryField": "Time",
-						"categoryAxis": {
-							"title": "Time",
-							"labelRotation": config.LabelRotation,
-							"parseDates": true,
-							"minPeriod":"ss",
-						},
-						"graphs": getGraphs(config.Graphs),					 
-						"dataProvider": "",						
-						"chartCursor": { 
 
-							"valueLineBalloonEnabled": true,
-							"valueLineEnabled": true,
-							"valueZoomable": true
-						},
-						"legend": {
-							"enabled": true,
-							"useGraphSettings": true,
-							"position": config.LegendPosition
-							
-						},
-						"export": {
-							"enabled": true
-						}
-					}
-        }
+		function getAxes(metadata){
+			return metadata.map(function(item){
+				var type = item.DataType.toLowerCase();
+				return {
+					minimum: item.Minimum,
+					maximum: (type == 'bool' || type == 'digital') ? item.Maximum + 2 : item.Maximum,
+					//inside: true
+				}
+			});
+		}
+
+		function convertToLabel(value, valueString, axis) {
+			 
+			var index = axis.id.slice("ValueAxis".length);
+			var states = scope.runtimeData.MetaData[index].States;
+
+			var stateValue = _.findWhere(states, {Value: value});
+
+			if(stateValue != undefined) {
+				return stateValue.Name;
+			}  
+			return "";
+		}
+
+		function updateAxesIndexes(axes, metadata){
+			axes.forEach(function(item, index){
+				var type = metadata[index].DataType.toLowerCase();
+				item.id = "ValueAxis" + index;
+				item.offset = (-45 * index);
+				item.color = item.color || TRACECOLORS[index - ~~(index / TRACECOLORS.length) * TRACECOLORS.length];
+				item.maximum = metadata[index].Maximum;
+				item.minimum = metadata[index].Minimum;
+				item.labelFunction =  (type == 'bool' || type == 'digital') ? convertToLabel : ""
+			});
+		}
+
+		function initChart(){
+			// Get the <div> element id attribute and make it random
+			var symbolContainerDiv = elem.find('#container')[0];
+			symbolContainerDiv.id = "amchartsLineChart_" + Math.random().toString(36).substr(2, 16);
+			
+			var chartConfiguration = getChartConfiguration(scope.config);
+
+			var chart = AmCharts.makeChart(symbolContainerDiv.id, chartConfiguration);
+
+			return chart;
+		}
+	
+		function getChartConfiguration(config){
+			return {
+				"type": "serial",
+				"theme": "dark",
+				"rotate": config.Rotate,
+				"color": config.TextColor,
+				"zoomOutText": "",
+				"valueAxes": [{
+					"position": "left",
+					"title": "Value"
+				}],    
+				"categoryField": "DateTime",
+				"categoryAxis": {
+					"title": "Time",
+					"labelRotation": config.LabelRotation,
+					"parseDates": true,
+					"minPeriod":"ss",
+				},					
+				"chartCursor": { 
+					"valueLineBalloonEnabled": true,
+					"valueLineEnabled": true,
+					"valueZoomable": true
+				},
+				"legend": {
+					"enabled": true,
+					"useGraphSettings": true,
+					"position": config.LegendPosition		
+				},
+				"colors": TRACECOLORS
+			};
+		}
+
 
 	}
-	PV.symbolCatalog.register(myCustomSymbolDefinition);
+
+	PV.symbolCatalog.register(definition);
 
 })(window.PIVisualization);
