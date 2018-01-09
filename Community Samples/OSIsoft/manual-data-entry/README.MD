@@ -20,7 +20,7 @@ If this folder doesn't exist, create it.
 
 3. Place *paper-plane-xxl.png*, *GitHub-Mark-32px.png*, *Q.png* and *loading.gif* to the .\ext\Icons directory (create if it doesn't exist)
 4. Place the Underscore library (*underscore-min.js*) to the .\ext\libraries (create if doesn't exist). The latest version of Underscore can be downloaded from http://underscorejs.org/.
-5. Place *bootstrap-manual-entry.css* to the "%PIHOME%\Coresight\Scripts\app\editor\tools\ext" directory. If this folder doesn't exist, create it.
+5. Place *bootstrap-manual-entry.css* to the "%PIHOME%\PIVision\Scripts\app\editor\tools\ext" directory. If this folder doesn't exist, create it.
 
 ## A word about requirements
 
