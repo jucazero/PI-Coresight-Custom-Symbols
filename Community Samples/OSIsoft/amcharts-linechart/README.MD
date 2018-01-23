@@ -22,5 +22,5 @@ If this folder doesn't exist, create it.
 
 3. Place all files with *.png* extension to the .\ext\Icons directory (create if it doesn't exist)
 4. Place the Underscore library (*underscore-min.js*) to the .\ext\libraries (create if doesn't exist). The latest version of Underscore can be downloaded from http://underscorejs.org/.
-5. Place the amCharts libraries (*amcharts.js*, *dark.js* and *serial.js*) to the .\ext\libraries folder.
+5. Download the amCharts JavaScript library from https://www.amcharts.com/download/ and copy *amcharts.js*, *dark.js* and *serial.js* files to the .\ext\libraries folder.
 6. Run iisreset
