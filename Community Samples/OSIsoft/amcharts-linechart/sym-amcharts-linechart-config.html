@@ -16,12 +16,17 @@
 				
 			</div>	
 			<div class="config-option-format">   
-				placeholder for 
-				min.max scale settings
-				
-				placeholder for label Date Format
+				<div class="config-option-single-row" style="margin: 4px 0;">
+					<div class="config-label">Scale Minimum:</div>
+					<input class="config-option-single-row-input" type="number" max="{{config.ScaleMax}}" ng-model="config.ScaleMin">
+				</div>
 			</div>			
-		
+			<div class="config-option-format">   
+				<div class="config-option-single-row" style="margin: 4px 0;">
+					<div class="config-label">Scale Maximum:</div>
+					<input class="config-option-single-row-input" type="number" min="{{config.ScaleMin}}" ng-model="config.ScaleMax">
+				</div>
+			</div>			
 		</div>
 		
 		

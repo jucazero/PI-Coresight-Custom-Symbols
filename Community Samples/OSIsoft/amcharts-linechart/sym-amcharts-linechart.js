@@ -179,9 +179,24 @@
 				chart.color = scope.config.TextColor;
 				chart.rotate = scope.config.Rotate;
 				chart.categoryAxis.labelRotation =  scope.config.LabelRotation;
-				chart.legend.position = scope.config.LegendPosition;			
+				chart.legend.position = scope.config.LegendPosition;	
+
+				if (!angular.equals(newConfig.ScaleMin, oldConfig.ScaleMin) || !angular.equals(newConfig.ScaleMax, oldConfig.ScaleMax)) {
+					chart.graphs.forEach(function(graph, index) {
+						chart.valueAxes[index].minimum = newConfig.ScaleMin;
+						chart.valueAxes[index].maximum = newConfig.ScaleMax;
+						if (newConfig.ScaleMin === null) {
+							 delete chart.valueAxes[index].minimum;
+						}		
+						if (newConfig.ScaleMax === null) {
+							 delete chart.valueAxes[index].maximum;
+						}						
+					});
+
+				}
 
 				chart.validateData();
+				chart.animateAgain();
 			}
 		}
 
@@ -266,8 +281,8 @@
 		function getAxes(metadata){
 			return metadata.map(function(item){
 				return {
-					minimum: item.Minimum,
-					maximum: isDigital(item) ? item.Maximum + 2 : item.Maximum,
+					minimum: scope.config.ScaleMax ? scope.config.ScaleMax : item.Minimum,
+					maximum: scope.config.ScaleMin ? scope.config.ScaleMin : (isDigital(item) ? item.Maximum + 2 : item.Maximum)
 					//inside: true
 				}
 			});
@@ -278,8 +293,8 @@
 				item.id = "ValueAxis" + index;
 				item.offset = (-45 * index);
 				item.color = item.color || TRACECOLORS[index - ~~(index / TRACECOLORS.length) * TRACECOLORS.length];
-				item.maximum = metadata[index].Maximum;
-				item.minimum = metadata[index].Minimum;
+				item.maximum = scope.config.ScaleMax ? scope.config.ScaleMax : metadata[index].Maximum;
+				item.minimum = scope.config.ScaleMin ? scope.config.ScaleMin : metadata[index].Minimum;
 				item.labelFunction = isDigital(metadata[index]) ? convertToLabel : ""
 			});
 		}
