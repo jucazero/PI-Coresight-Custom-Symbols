@@ -19,6 +19,8 @@ If this folder doesn't exist, create it.
 	*sym-dropdown-menu-config.html*
 	
 	*sym-dropdown-menu.js*
+	
+	*dropdown-menu.css*
 
 3. Place all files with *.png* extension to the .\ext\Icons directory (create if it doesn't exist)
 6. Run iisreset
