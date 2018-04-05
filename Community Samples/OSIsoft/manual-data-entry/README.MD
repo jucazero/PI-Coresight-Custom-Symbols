@@ -5,6 +5,10 @@ This symbol is for PI Vision version 2017.
 <img src="https://github.com/AnnaPerry/PI-Coresight-Custom-Symbols/blob/master/Community%20Samples/OSIsoft/manual-data-entry/Example.png" 
 alt="Manual Data Entry for PI Coresight" />
 
+## Feedback needed
+
+If you are using this symbol in your project, would you mind sending me a couple of lines on what your use case for manual entry is? I'd appreciate it very much! aperry @ osisoft.com
+
 ## To deploy the symbol: 
 
 1. In Windows Explorer, navigate to the "%PIHOME%\PIVision\Scripts\app\editor\symbols\ext" on your PI Coresight web server; typically, it's located in "C:\Program Files\PIPC\PIVision\Scripts\app\editor\symbols\ext".
