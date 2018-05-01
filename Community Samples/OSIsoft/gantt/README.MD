@@ -20,4 +20,4 @@ If this folder doesn't exist, create it.
 	*sym-gantt.js*
 
 3. Download amCharts Javascript library from https://www.amcharts.com/download/
-   Place *gantt.js* and *amcharts.js* to .\ext\libraries folder 
+   Place *serial.js*, *gantt.js* and *amcharts.js* to .\ext\libraries folder 
