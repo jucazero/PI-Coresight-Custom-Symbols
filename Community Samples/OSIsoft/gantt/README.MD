@@ -5,7 +5,7 @@ This symbol is for PI Vision version 2017 and 2017 R2.
 Warning! This is just a prototype, no bad data validation or error reporting. Use it with digital type data.
 
 
-<img src="https://github.com/AnnaPerry/PI-Coresight-Custom-Symbols/blob/master/Community%20Samples/OSIsoft/gantt/gantt-example.jpg" 
+<img src="https://github.com/AnnaPerry/PI-Coresight-Custom-Symbols/blob/master/Community%20Samples/OSIsoft/gantt/gantt-example.png" 
 alt="Gantt Chart for PI Vision" />
 
 ## To deploy the symbol: 
