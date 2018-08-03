@@ -169,7 +169,7 @@
 					"Value": stream.IsDigital ? stream.InputValue.Name : stream.InputValue
 				};
 				batchRequest["SendValue" + index] = {
-							"Method": stream.isPoint ? 'POST' : 'PUT',
+							"Method": stream.isPoint ? 'PUT' : 'POST',
 							"Resource": '{0}',
 							"Content": JSON.stringify(data),
 							'ParentIds': [
