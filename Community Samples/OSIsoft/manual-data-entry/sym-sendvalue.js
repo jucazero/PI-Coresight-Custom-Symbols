@@ -1,6 +1,6 @@
 (function (PV) {
 	'use strict';
-
+	    
 	function symbolVis() { }
 	PV.deriveVisualizationFromBase(symbolVis);
 
@@ -10,7 +10,7 @@
 	    datasourceBehavior:  PV.Extensibility.Enums.DatasourceBehaviors.Multiple,
 		visObjectType: symbolVis,
         iconUrl: '/Scripts/app/editor/symbols/ext/Icons/paper-plane-xxl.png',
-	    getDefaultConfig: function() {
+	    getDefaultConfig: function() {			
 	    	return {
 	    		DataShape: 'Table',
 		        Height: 50,
@@ -44,11 +44,11 @@
 			deleteTrace: configDeleteTrace
 		}
 	};
-
+    		
 	var baseUrl = PV.ClientSettings.PIWebAPIUrl.replace(/\/?$/, '/'); //Example: "https://server.domain.com/piwebapi/";
-
+		
 	symbolVis.prototype.init = function (scope, elem, webServices, $http, $q, log) {
-
+			
 		var TYPES = {
 			Single: "Number",
 			Double: "Number",
@@ -59,9 +59,9 @@
 			String: "String",
 			Digital: "String",
 			Boolean: "Boolean",
-			DateTime: "String"
+			DateTime: "String"	
 		};
-
+		
 		scope.runtimeData.newStreamsAdded = true;
 		scope.runtimeData.streamList = [];
 		scope.runtimeData.isAllSelected = false;
@@ -70,15 +70,15 @@
 
 		this.onConfigChange = configChange;
 		this.onDataUpdate = dataUpdate;
-
+		
 		function configChange(newConfig, oldConfig) {
-            if (newConfig && oldConfig && !angular.equals(newConfig, oldConfig)) {
+            if (newConfig && oldConfig && !angular.equals(newConfig, oldConfig)) {				
 				if (newConfig.DataSources.length > oldConfig.DataSources.length) {
 					scope.runtimeData.newStreamsAdded = true;
 				}
-            }
+            } 
         }
-
+		
 		function dataUpdate(data) {
 			if (!data) return;
 			if (data.Rows[0].Label && scope.runtimeData.newStreamsAdded) {
@@ -92,12 +92,12 @@
 					}
 				});
 				scope.runtimeData.newStreamsAdded = false;
-			}
+			} 
 			scope.runtimeData.streamList.forEach(function (item, index){
 				item.CurrentValue = data.Rows[index].Value;
 			})
 		}
-
+		
 		function getStreams(dataRows) {
 			return dataRows.map(function (item, index){
 				return {
@@ -105,8 +105,8 @@
 					Type: TYPES[item.DataType],
 					CurrentValue: item.Value,
 					UOM: item.Units,
-					AlternativeName: scope.config.AlternativeNames.length> 0 && scope.config.AlternativeNames[index]
-									? scope.config.AlternativeNames[index] : '<Enter name>',
+					AlternativeName: scope.config.AlternativeNames.length> 0 && scope.config.AlternativeNames[index] 
+									? scope.config.AlternativeNames[index] : '<Enter name>', 
 					IsSelected: false,
 					Path: item.Path,
 					InputTimestamp: scope.config.DefaultTimestamp,
@@ -114,22 +114,22 @@
 					isPoint: item.Path.indexOf('pi:') == -1 ? false : true,
 					InputValue: undefined
 				};
-			});
+			});	
 		}
-
+		
 		scope.sendValues = function() {
-
+		   
 			scope.loading = true; //show loading icon
-			scope.isButtonEnabled = false;
+			scope.isButtonEnabled = false;   
 			var streams = scope.runtimeData.streamList;
 			if(!anyStreamsSelected(streams)) return;
-
-			var batchRequest = formBulkSendRequest(streams);
+				
+			var batchRequest = formBulkSendRequest(streams);		
 			//Send batch request to PI Web API endpoint
-			var sendDataPromise = Object.keys(batchRequest).length > 0
+			var sendDataPromise = _.size(batchRequest) > 0 
 									? $http.post(baseUrl + "batch", batchRequest, {withCredentials: true})
 									: $q.reject();
-
+									
 			sendDataPromise.then(function (response) {
 				setTimeout(function () {
 					scope.loading = false;
@@ -141,20 +141,20 @@
 							log.add(PV.ResourceStrings.CommunicationError, log.Severity.Error, message, log.ClearType.Manual);
 						}
 					}
-				}, 5000);
+				}, 5000);	
 			}, function (error) {
 					console.log('Failed request to PI Web API:', error);
 					log.add(PV.ResourceStrings.CommunicationError, log.Severity.Error, 'Check Developer Console for errors', log.ClearType.Manual);
 					scope.loading = false;
 					scope.isButtonEnabled = true;
 				}
-			);
+			);	  
 	    };
-
+	   
 	   	function formBulkSendRequest(streamList) {
-
+			
 			var batchRequest = {};
-
+			
 			streamList.forEach(function (stream, index) {
 				if (!stream.IsSelected || (!stream.InputValue && stream.InputValue !== 0)) return;
 				// Request to get stream
@@ -162,8 +162,8 @@
 				batchRequest['GetStream' + index] = {
 					'Method': 'GET',
 					'Resource': baseUrl + (stream.isPoint ? 'points' : 'attributes') + '?path=' + path + '&selectedFields=Links.Value'
-				}
-				// Request to send data to the previsouly acquired stream
+				}			
+				// Request to send data to the previsouly acquired stream			
 				var data = {
 					"Timestamp": stream.InputTimestamp,
 					"Value": stream.IsDigital ? stream.InputValue.Name : stream.InputValue
@@ -182,8 +182,8 @@
 								'Content-Type': 'application/json'
 							}
 				}
-			});
-
+			});		   
+				
 			return JSON.stringify(batchRequest);
 		}
 
@@ -196,24 +196,24 @@
 			scope.runtimeData.streamList.forEach(function (stream) { stream.IsSelected = toggleValue });
 			scope.isButtonEnabled  = anyStreamsSelected();
 		};
-
+		
 		scope.toggleStreamSelection = function() {
 			scope.runtimeData.isAllSelected = scope.runtimeData.streamList.every(function (stream) { return(stream.IsSelected); });
 			scope.isButtonEnabled  = anyStreamsSelected();
-		};
+		};		
 	}
-
+	
 	function configDeleteTrace(scope) {
 		var index = scope.runtimeData.selectedStream;
         var datasources = scope.symbol.DataSources;
 		var streams = scope.runtimeData.streamList;
 		var names = scope.config.AlternativeNames;
-
+		
         if (datasources.length > 1) {
-            datasources.splice(index, 1);
-			streams.splice(index, 1);
+            datasources.splice(index, 1);	
+			streams.splice(index, 1);   
 			names.splice(index, 1);
-			scope.$root.$broadcast('refreshDataForChangedSymbols');
+			scope.$root.$broadcast('refreshDataForChangedSymbols');		
 		}
 	}
 
