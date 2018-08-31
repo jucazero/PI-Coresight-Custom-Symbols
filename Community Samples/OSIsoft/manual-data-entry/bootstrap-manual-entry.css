@@ -296,27 +296,3 @@ table th[class*="col-"] {
 .affix {
   position: fixed;
 }
-.send-button {
-  text-shadow: 0 -1px 0 rgba(0,0,0,.25);
-  margin-left: auto;
-  border: 1px solid rgba(230,231,232,.55);
-}
-.col-text {
-  text-align: left;
-}
-.col-input > input, .col-input > select {
-	color: black;
-	text-align: end;
-}
-.alt-name {
-  background-color: transparent !important;
-  border-color: transparent !important;
-}
-.margin-t8-r35 {
-  padding-top: 8px !important;
-  margin-right: 35px !important;
-}
-.config-row {
-  margin-left:20px; 
-  font-size: 14px;
-}
