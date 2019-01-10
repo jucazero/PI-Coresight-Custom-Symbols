@@ -18,8 +18,6 @@ If this folder doesn't exist, create it.
 
 	*sym-pareto-template.html*
 	
-	*sym-pareto-config.html*
-	
 	*sym-pareto.js*
 
 3. Download amCharts Javascript library from https://www.amcharts.com/download/
