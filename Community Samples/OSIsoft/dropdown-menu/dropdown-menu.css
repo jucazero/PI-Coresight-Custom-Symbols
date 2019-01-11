@@ -28,6 +28,10 @@ li.custom-dropdown {
     display: inline-block;
 }
 
+.custom-cursor-pointer {
+    cursor: pointer;
+}
+
 .custom-dropdown-content {
     display: none;
     position: absolute;
