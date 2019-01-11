@@ -11,7 +11,7 @@ ul.custom-menu > li {
 
 ul.custom-menu li 
 ul.custom-menu a, 
-.custom-dropbtn {
+.custom-dropdown-button {
     display: inline-block;
     color: white;
     text-align: center;
@@ -20,7 +20,7 @@ ul.custom-menu a,
 	   background-color: #2a3e5d;
 }
 
-ul.custom-menu li a:hover, .custom-dropdown:hover .custom-dropbtn {
+ul.custom-menu li a:hover, .custom-dropdown:hover .custom-dropdown-button {
     background-color: #2a3e5d;
 }
 
@@ -68,6 +68,16 @@ table.custom-config-table tr:nth-child(even) {
     background-color: #FFFFFF;
 }
 
+table.custom-config-table tbody > tr > td {
+    text-align: left; 
+    vertical-align: middle;
+}
+
+table.custom-config-table tbody > tr > td > input {
+    background-color: transparent;
+    border-color: transparent;
+}
+
 button.custom-config-button {
 	background-color: #2a3e5d;
 	color: #fff;
@@ -79,12 +89,18 @@ button.custom-config-button {
 	border: 1px solid rgba(230,231,232,.55);
 }
 
-.removebutton
-{
-	width:40%;
-	max-width:30px;
+.removebutton {
+	width: 40%;
+	max-width: 30px;
 	margin-left: auto;
-	display:block;
-	margin:0 auto;
-	cursor:pointer;
+	display: block;
+    margin: 0 auto;
+    outline: none;
+}
+
+.custom-disabled {
+    color: currentColor;
+    cursor: not-allowed;
+    opacity: 0.5;
+    text-decoration: none;
 }
