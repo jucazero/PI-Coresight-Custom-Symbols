@@ -2,12 +2,6 @@
     <li class="k-state-active">
         <span class="panel-bar-label-no-wrap">General</span>
 
-    <div class="config-option-single-row" style="margin:10px 20px; font-size: 14px;">
-      <div class="config-option-ie11-overflow-fix table-responsive">
-        <div class="config-label">Text</div>
-				<input type="text" ng-model="config.btnText"  style="width:100px; height:100%; float: right; margin-right:35px;" class="ng-pristine ng-valid ng-touched">
-      </div>
-    </div>
 		<div class="config-option-single-row" style="margin:10px 20px; font-size: 14px;">
 			<div class="config-option-ie11-overflow-fix table-responsive">
 
@@ -17,10 +11,15 @@
 						<th>Link</th>
 						<th>Remove</th>
 					</tr>
+					<tr>
+						<td style="text-align: left; vertical-align: middle;"><input type="text" style="background-color:transparent; border-color:transparent" ng-model="config.headerLink.Name"/></td>
+						<td style="text-align: left; vertical-align: middle;"><input type="text" style="background-color:transparent; border-color:transparent" ng-model="config.headerLink.Url"/></td>
+						<td disabled><div><img class="removebutton" src='Scripts/app/editor/tools/ext/Icons/trashcan.png'></img></div></td>
+					</tr>
 					<tr ng-repeat="item in config.Links">
 
 						<td style="text-align: left; vertical-align: middle;"><input type="text" style="background-color:transparent; border-color:transparent" ng-model="item.Name"/></td>
-						<td style="text-align: left; vertical-align: middle;"><input type="text" style="background-color:transparent; border-color:transparent" ng-model="item.URL"/></td>
+						<td style="text-align: left; vertical-align: middle;"><input type="text" style="background-color:transparent; border-color:transparent" ng-model="item.Url"/></td>
 						<td><div ng-click="config.deleteRow($index)"><img class="removebutton" src='Scripts/app/editor/tools/ext/Icons/trashcan.png'></img></div></td>
 					</tr>
 				</table>

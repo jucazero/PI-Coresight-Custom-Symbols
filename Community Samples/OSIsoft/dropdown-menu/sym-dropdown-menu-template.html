@@ -1,8 +1,8 @@
 <ul class="custom-menu">
   <li class="custom-dropdown">
-    <a href="javascript:void(0)" class="custom-dropbtn">{{config.btnText}}</a>
+    <a ng-href="{{config.headerLink.Url}}" class="custom-dropbtn" target="_blank">{{config.headerLink.Name}}</a>
     <div class="custom-dropdown-content">
-      <a ng-href="{{item.URL}}" ng-repeat="item in config.Links" target="_blank">{{item.Name}}</a>
+      <a ng-href="{{item.Url}}" ng-repeat="item in config.Links" target="_blank">{{item.Name}}</a>
     </div>
   </li>
 </ul>

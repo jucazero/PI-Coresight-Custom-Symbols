@@ -1,11 +1,11 @@
 (function (PV) {
-  "use strict";
+  'use strict';
 
   function symbolVis() { };
   PV.deriveVisualizationFromBase(symbolVis);
 
   var definition = {
-     typeName: "dropdown-menu",
+     typeName: 'dropdown-menu',
      visObjectType: symbolVis,
      datasourceBehavior: PV.Extensibility.Enums.DatasourceBehaviors.Single,
      getDefaultConfig: function(){
@@ -13,7 +13,7 @@
                 Height: 150,
                 Width: 150,
         Links: [],
-        btnText: 'Dropdown'
+		headerLink: { Name: 'Dropdown', Url: '' }
          }
      },
 	    configOptions: function () {
@@ -28,8 +28,8 @@
 
 		scope.config.AddNewLink = function(){
 			scope.config.Links.push({
-				Name: "",
-				URL: ""
+				Name: '',
+				Url: ''
 			});
 
 		}
