@@ -1,5 +1,5 @@
 <!--
-	Copyright 2016-2017 OSIsoft, LLC.
+	Copyright 2016-2019 OSIsoft, LLC.
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
 	You may obtain a copy of the License at
@@ -11,87 +11,122 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 -->
+<!-- Data prefix configuration ---------------------------------------------------->
+	
 <div class="c-side-pane t-toolbar">
-	<span style="color:#fff; margin-left:10px;">Data Item Column</span>
+	<span style="color:#fff; margin-left:10px;">Data Options</span>
 </div>
-<div class="config-option-format">
-	<pv-color-picker id="dataItemColumnColor" ng-model="config.dataItemColumnColor" config="config">
-</pv-color-picker></div>	
-<label class="flex-align-center" style="margin-top: 8px; margin-left: 8px;">
-	<input type="checkbox" class="c-config-checkbox"
-		   ng-model="config.showDataItemNameCheckboxValue">Show Data Item Column<br />
-</label>
-<br>
 
+        
+<label class="flex-align-center" style="margin-top:8px; margin-left: 8px;font-size:14px;">
+	<input type="checkbox" class="c-config-checkbox"
+		   ng-model="config.insertUrl">Insert URL on Value<br />
+</label>
+		<div ng-show="config.insertUrl">
+            <div style="margin: 8px 0"> 
+				<div class="config-horizontal-rule" style="width: 90%;"></div>
+				<div class="config-option-single-row" style="margin: 0 15px;font-size:14px;">
+						<div class="config-label">URL Prefix</div>
+						<div style="margin: 0 15px;">
+							<input type="text"  
+							style="width:100%; 
+							height:100%; float: 
+							right;margin-right:25px;" 
+							ng-model="config.urlPrefix"/> 
+						</div>
+				</div>				
+            </div>
+			<div style="margin: 8px 0"> 
+				<div class="config-horizontal-rule" style="width: 90%;"></div>
+				<div class="config-option-single-row" style="margin: 0 15px;font-size:14px;">
+						<div class="config-label">URL Suffix</div>
+						<div style="margin: 0 15px;">
+							<input type="text"  
+							style="width:100%; 
+							height:100%; float: 
+							right;margin-right:25px;" 
+							ng-model="config.urlSuffix"/> 
+						</div>
+				</div>				
+            </div>
+        </div>
+		
 <div class="c-side-pane t-toolbar">
-	<span style="color:#fff; margin-left:10px;">Timestamp Column</span>
+	<span style="color:#fff; margin-left:10px;">Column Options</span>
 </div>
-<div class="config-option-format">
-	<pv-color-picker id="timestampColumnColor" ng-model="config.timestampColumnColor" config="config">
-</pv-color-picker></div>	
-<label class="flex-align-center" style="margin-top:8px; margin-left: 8px;">
+<label class="flex-align-center" style="margin-top:8px; margin-left: 8px;font-size:14px;">
 	<input type="checkbox" class="c-config-checkbox"
 		   ng-model="config.showTimestampCheckboxValue">Show Timestamp Column<br />
 </label>
-<br>
+<label class="flex-align-center" style="margin-top:8px; margin-left: 8px;font-size:14px;">
+	<input type="checkbox" class="c-config-checkbox"
+		   ng-model="config.showHeaderCheckboxValue">Show Header<br />
+</label>
+<label class="flex-align-center" style="margin-top:8px; margin-left: 8px;font-size:14px;">
+	<input type="checkbox" class="c-config-checkbox"
+		   ng-model="config.showSearchCheckboxValue">Show Search Filter<br />
+</label>
+<label class="flex-align-center" style="margin-top:8px; margin-left: 8px;font-size:14px;">
+	<input type="checkbox" class="c-config-checkbox"
+		   ng-model="config.orderFromNewestToOldest">Order from Newest to Oldest <br />
+</label>
+<label class="flex-align-center" style="margin-top:8px; margin-left: 8px;font-size:14px;">
+	<input type="checkbox" class="c-config-checkbox"
+		   ng-model="config.enableKeywordColors">Enable Keyword Colors<br />
+</label>
+<label class="flex-align-center" style="margin-top:8px; margin-left: 8px;font-size:14px;">
+	<input type="checkbox" class="c-config-checkbox"
+		   ng-model="config.showApplyTimeControls">Show Apply Time Controls<br />
+</label>
+<br/>
 
 <div class="c-side-pane t-toolbar">
-	<span style="color:#fff; margin-left:10px;">Value Column</span>
+	<span style="color:#fff; margin-left:10px;">Colors</span>
 </div>
+<div class="config-option-format" ng-show="config.showTimestampCheckboxValue">
+	<pv-color-picker ng-model="config.timestampColumnColor" config="config" colorkeyword="Timestamps">
+</pv-color-picker></div>	
 <div class="config-option-format">
-	<pv-color-picker id="valueColumnColor" ng-model="config.valueColumnColor" config="config">
+	<pv-color-picker ng-model="config.valueColumnColor" config="config" colorkeyword="Values">
 </pv-color-picker></div>
-<br/>
-<label style="margin-top:8px; margin-left: 8px;">
-	<input type="number" class="" style="text-align:center;margin-left:10px;margin-right:15px;"
-		   ng-model="config.numberOfDecimalPlaces">Value Decimal Places<br />
+<div class="config-option-format">
+	<pv-color-picker ng-model="config.hoverColor" config="config" colorkeyword="Mouse-over">
+</pv-color-picker></div>
+<div class="config-option-format">
+	<pv-color-picker ng-model="config.evenRowColor" config="config" colorkeyword="Even Rows">
+</pv-color-picker></div>
+<div class="config-option-format">
+	<pv-color-picker ng-model="config.oddRowColor" config="config" colorkeyword="Odd Rows">
+</pv-color-picker></div>
+<div class="config-option-format">
+	<pv-color-picker ng-model="config.outsideBorderColor" config="config" colorkeyword="Outside Border">
+</pv-color-picker></div>
+<div class="config-option-format">
+	<pv-color-picker ng-model="config.headerTextColor" config="config" colorkeyword="Header Text">
+</pv-color-picker></div>
+<div class="config-option-format">
+	<pv-color-picker ng-model="config.headerBackgroundColor" config="config" colorkeyword="Header Fill">
+</pv-color-picker></div>
+<div class="config-option-format">
+	<pv-color-picker ng-model="config.searchTextColor" config="config" colorkeyword="Search Text">
+</pv-color-picker></div>
+<div class="config-option-format">
+	<pv-color-picker ng-model="config.searchBackgroundColor" config="config" colorkeyword="Search Fill">
+</pv-color-picker></div>
+<div class="config-option-format" ng-show="config.enableKeywordColors">
+	<pv-color-picker id="" ng-model="config.keyword1Color" config="config" colorkeyword="Keyword 1">
+</pv-color-picker>
+<div class="config-option-format" ng-show="config.showApplyTimeControls">
+	<pv-color-picker id="" ng-model="config.controlColumnColor" config="config" colorkeyword="Time Controls">
+</pv-color-picker>
+</div>	
+<br>
+<div class="c-side-pane t-toolbar" ng-show="config.enableKeywordColors">
+	<span style="color:#fff; margin-left:10px;">Keyword</span>
+</div>
+<label class="flex-align-center" style="margin-top:8px; margin-left: 14px;font-size:14px;" ng-show="config.enableKeywordColors">
+	Value
+	<input type="text" style="margin-left:8px;margin-right:8px"
+		   ng-model="config.keyword1">
 </label>
 <br>
-
-<div class="c-side-pane t-toolbar">
-	<span style="color:#fff; margin-left:10px;">Mouse-Over</span>
-</div>
-<div class="config-option-format">
-	<pv-color-picker id="hoverColor" ng-model="config.hoverColor" config="config">
-</pv-color-picker></div>
-<br/>
-
-<div class="c-side-pane t-toolbar">
-	<span style="color:#fff; margin-left:10px;">Even Rows</span>
-</div>
-<div class="config-option-format">
-	<pv-color-picker id="evenRowColor" ng-model="config.evenRowColor" config="config">
-</pv-color-picker></div>
-<br/>
-
-<div class="c-side-pane t-toolbar">
-	<span style="color:#fff; margin-left:10px;">Odd Rows</span>
-</div>
-<div class="config-option-format">
-	<pv-color-picker id="oddRowColor" ng-model="config.oddRowColor" config="config">
-</pv-color-picker></div>
-<br/>
-
-<div class="c-side-pane t-toolbar">
-	<span style="color:#fff; margin-left:10px;">Outside Border</span>
-</div>
-<div class="config-option-format">
-	<pv-color-picker id="outsideBorderColor" ng-model="config.outsideBorderColor" config="config">
-</pv-color-picker></div>
-<br/>
-
-<div class="c-side-pane t-toolbar">
-	<span style="color:#fff; margin-left:10px;">Header Text</span>
-</div>
-<div class="config-option-format">
-	<pv-color-picker id="headerTextColor" ng-model="config.headerTextColor" config="config">
-</pv-color-picker></div>
-<br/>
-
-<div class="c-side-pane t-toolbar">
-	<span style="color:#fff; margin-left:10px;">Header Background</span>
-</div>
-<div class="config-option-format">
-	<pv-color-picker id="headerBackgroundColor" ng-model="config.headerBackgroundColor" config="config">
-</pv-color-picker></div>
-<br/>

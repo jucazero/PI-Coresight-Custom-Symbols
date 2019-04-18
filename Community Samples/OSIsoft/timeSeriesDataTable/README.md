@@ -1,3 +1,23 @@
+## *Time Series Data Table* custom PI Vision Symbol
+
+This symbol allows PI Vision to display time series data in tabular form. Simply drag and drop an attribute from attributes pane to visualize the original compressed data provided by the selected attribute. 
+
+***Insert URL on Value option***
+
+If selected, this option will display data with a embedded hyperlink. A typical use case is to provide links to pictures stored in a folder. The value could be, for example, the name of a file without extension, but the hyperlink embedded on the displayed values will contain the full path to access those files. The configuration pane will expose the *URL Prefix* and *URL Suffix* fields when the Insert URL on Value option is selected.
+
+Example:
+URL prefix: https://myserver/pictures/
+URL suffix: .jpg
+
+| Attribute value showing in table | Embedded hyperlink |
+|--|--|
+|Bearing001|https://myserver/pictures/Bearing001.jpg|
+|Bearing002|https://myserver/pictures/Bearing002.jpg|
+
+
+## Deployment
+
 Follow these simple instructions to install this custom symbol; the overall process should only take a minutes.
 
 1. In Windows Explorer, navigate to the "PIPC\PIVision" installation folder on your PI Vision server; typically, it's located in "C:\Program Files\PIPC\PIVision"
